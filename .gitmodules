@@ -1,25 +1,25 @@
 [submodule "r8ge-video/vendor/stb"]
-	path = r8ge-video/vendor/stb
+	path = r8ge/vendor/stb
 	url = https://github.com/nothings/stb
 [submodule "r8ge-video/vendor/glfw"]
-	path = r8ge-video/vendor/glfw
+	path = r8ge/vendor/glfw
 	url = https://github.com/glfw/glfw
 [submodule "r8ge-video/vendor/glm"]
-	path = r8ge-video/vendor/glm
+	path = r8ge/vendor/glm
 	url = https://github.com/g-truc/glm
 [submodule "r8ge-video/vendor/imgui"]
-	path = r8ge-video/vendor/imgui
+	path = r8ge/vendor/imgui
 	url = https://github.com/ocornut/imgui
 	branch = docking
 [submodule "r8ge-video/vendor/ImGuizmo"]
-	path = r8ge-video/vendor/ImGuizmo
+	path = r8ge/vendor/ImGuizmo
 	url = https://github.com/CedricGuillemet/ImGuizmo
 [submodule "r8ge-video/vendor/assimp"]
-	path = r8ge-video/vendor/assimp
+	path = r8ge/vendor/assimp
 	url = https://github.com/assimp/assimp
 [submodule "r8ge-video/vendor/JoltPhysics"]
 	path = r8ge-video/vendor/JoltPhysics
 	url = https://github.com/jrouwe/JoltPhysics
 [submodule "r8ge-core/vendor/spdlog"]
-	path = r8ge-video/vendor/spdlog
+	path = r8ge/vendor/vendor
 	url = https://github.com/gabime/spdlog
