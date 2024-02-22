@@ -20,3 +20,6 @@
 [submodule "r8ge-video/vendor/JoltPhysics"]
 	path = r8ge-video/vendor/JoltPhysics
 	url = https://github.com/jrouwe/JoltPhysics
+[submodule "r8ge-core/vendor/spdlog"]
+	path = r8ge-video/vendor/spdlog
+	url = https://github.com/gabime/spdlog
