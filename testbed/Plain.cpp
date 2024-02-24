@@ -1,7 +1,4 @@
 #include <r8ge/r8ge.h>
-#include <r8ge/video.h>
-#include <memory>
-
 
 
 class GameLayer : public r8ge::Layer {
@@ -44,10 +41,6 @@ public:
 
     void onExit() override {
         R8GE_LOG("`{}` game exiting", getGameName());
-        /*
-        ImGui_ImplOpenGL3_Shutdown();
-        ImGui::DestroyContext();
-         */
     }
 };
 
