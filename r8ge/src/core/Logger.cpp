@@ -5,8 +5,25 @@
 #include <spdlog/sinks/basic_file_sink.h>
 
 namespace r8ge {
+     namespace global {
+        Logger* logger = nullptr;
+    }
 
     std::shared_ptr<spdlog::logger> Logger::s_Logger;
+
+    Logger::Logger()
+    {
+        m_running = true;
+        m_thread = std::thread(&Logger::logLoop, this);
+        init();
+    }
+
+
+    Logger::~Logger()
+    {
+        m_running = false;
+        m_thread.join();
+    }
 
     void Logger::init()
     {
@@ -21,5 +38,12 @@ namespace r8ge {
         spdlog::register_logger(s_Logger);
         s_Logger->set_level(spdlog::level::trace);
         s_Logger->flush_on(spdlog::level::trace);
+    }
+
+    void Logger::logLoop()
+    {
+        while(m_running) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
     }
 }

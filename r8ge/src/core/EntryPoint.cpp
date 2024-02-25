@@ -4,20 +4,23 @@
 #include "fileio/FileIO.h"
 #include "Logger.h"
 #include "Ar8ge.h"
+#include "../video/EntrytPoint.h"
 
 namespace r8ge {
     int main(const EntryPointData& entry_data)
     {
-        Logger::init();
-        auto engine = new Ar8ge;
+        global::logger = new Logger;
         global::fileIO = new FileIO(256);
+        auto engine = new Ar8ge;
 
         engine->init();
+        r8ge::video::EntryPoint entryPoint;
         engine->run();
         engine->exit();
 
         delete engine;
         delete global::fileIO;
+        delete global::logger;
 
         return 0;
     }

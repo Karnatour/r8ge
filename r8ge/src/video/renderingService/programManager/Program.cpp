@@ -1,6 +1,6 @@
 #include "Program.h"
-#include <r8ge/r8ge.h>
 
+#include <r8ge/r8ge.h>
 #include <GL/glew.h>
 
 namespace r8ge {

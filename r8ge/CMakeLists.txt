@@ -44,12 +44,25 @@ add_library(r8ge STATIC
         src/core/instance/layers/Layers.h
         src/core/instance/layers/LayerSwitcher.cpp
         src/core/instance/layers/LayerSwitcher.h
+        src/core/fileio/FileType.cpp
+        src/core/fileio/FileType.h
+        src/core/fileio/FileReader.cpp
+        src/core/fileio/FileReader.h
+        src/core/fileio/FileIO.cpp
+        src/core/fileio/FileIO.h
+        src/core/fileio/File.cpp
+        src/core/fileio/File.h
+        src/core/fileio/fileReaders/Glsl.cpp
+        src/core/fileio/fileReaders/Glsl.h
+        src/core/fileio/fileReaders/Text.cpp
+        src/core/fileio/fileReaders/Text.h
         src/video/Video.h
         src/video/Video.cpp
         src/video/EntrytPoint.cpp
         src/video/EntrytPoint.h
         src/video/types/Color.cpp
         src/video/types/Color.h
+        src/video/types/Primitives.cpp
         src/video/types/Primitives.h
         src/video/types/Texture.h
         src/video/types/Vertex.cpp
@@ -93,20 +106,10 @@ add_library(r8ge STATIC
         src/video/guiService/linux-impl/imgui/ImGUI.h
         src/video/windowingService/linux-impl/glfw/GLFW.cpp
         src/video/windowingService/linux-impl/glfw/GLFW.h
+        src/video/windowingService/WindowingService.cpp
+        src/video/windowingService/WindowingService.h
         src/video/windowingService/linux-impl/glfw/Convertor.h
         src/video/windowingService/linux-impl/glfw/Convertor.cpp
-        src/core/fileio/FileType.cpp
-        src/core/fileio/FileType.h
-        src/core/fileio/FileReader.cpp
-        src/core/fileio/FileReader.h
-        src/core/fileio/FileIO.cpp
-        src/core/fileio/FileIO.h
-        src/core/fileio/File.cpp
-        src/core/fileio/File.h
-        src/core/fileio/fileReaders/Glsl.cpp
-        src/core/fileio/fileReaders/Glsl.h
-        src/core/fileio/fileReaders/Text.cpp
-        src/core/fileio/fileReaders/Text.h
 )
 
 # Specify the precompiled header
@@ -138,27 +141,51 @@ target_include_directories(r8ge PUBLIC vendor/spdlog/include)
 add_subdirectory(vendor/spdlog)
 target_link_libraries(r8ge PRIVATE spdlog)
 
-include_directories(vendor/imgui)
-add_library(imgui
-        vendor/imgui/imgui.cpp
-        vendor/imgui/imgui_draw.cpp
-        vendor/imgui/imgui_demo.cpp
-        vendor/imgui/imgui_widgets.cpp
-        vendor/imgui/imgui_tables.cpp
-        vendor/imgui/backends/imgui_impl_glfw.cpp
-        vendor/imgui/backends/imgui_impl_opengl3.cpp
-)
-add_compile_definitions(IMGUI_IMPL_OPENGL_LOADER_GLEW)
+set(IMGUI_PATH vendor/imgui)
+file(GLOB IMGUI_GLOB
+    ${IMGUI_PATH}/imgui.h
+    ${IMGUI_PATH}/imgui.cpp
+    ${IMGUI_PATH}/imconfig.h
+    ${IMGUI_PATH}/imgui_demo.cpp
+    ${IMGUI_PATH}/imgui_draw.cpp
+    ${IMGUI_PATH}/imgui_internal.h
+    ${IMGUI_PATH}/imstb_rectpack.h
+    ${IMGUI_PATH}/imstb_textedit.h
+    ${IMGUI_PATH}/imstb_truetype.h
+    ${IMGUI_PATH}/imgui_tables.cpp
+    ${IMGUI_PATH}/imgui_widgets.cpp
 
-include_directories(vendor/ImGuizmo)
-add_library(ImGuizmo
-        vendor/ImGuizmo/ImGuizmo.cpp
-        vendor/ImGuizmo/ImCurveEdit.cpp
-        vendor/ImGuizmo/ImGradient.cpp
-        vendor/ImGuizmo/ImSequencer.cpp
-        vendor/ImGuizmo/ImGuizmo.cpp
+    ${IMGUI_PATH}/backends/imgui_impl_glfw.h
+    ${IMGUI_PATH}/backends/imgui_impl_glfw.cpp
+    ${IMGUI_PATH}/backends/imgui_impl_opengl3.h
+    ${IMGUI_PATH}/backends/imgui_impl_opengl3.cpp
+    ${IMGUI_PATH}/backends/imgui_impl_opengl3_loader.cpp)
+
+add_library("imgui" STATIC ${IMGUI_GLOB})
+target_include_directories("imgui" PUBLIC ${IMGUI_PATH})
+target_include_directories(r8ge PUBLIC ${IMGUI_PATH})
+target_link_libraries("imgui" PRIVATE glfw)
+
+set(IMGUIZMO_PATH vendor/ImGuizmo)
+file(GLOB IMGUIZMO_GLOB
+    ${IMGUIZMO_PATH}/ImGuizmo.h
+    ${IMGUIZMO_PATH}/ImGuizmo.cpp
+    ${IMGUIZMO_PATH}/ImCurveEdit.h
+    ${IMGUIZMO_PATH}/ImCurveEdit.cpp
+    ${IMGUIZMO_PATH}/GraphEditor.cpp
+    ${IMGUIZMO_PATH}/GraphEditor.h
+    ${IMGUIZMO_PATH}/ImGradient.h
+    ${IMGUIZMO_PATH}/ImGradient.cpp
+    ${IMGUIZMO_PATH}/ImSequencer.h
+    ${IMGUIZMO_PATH}/ImZoomSlider.h
 )
-link_libraries(imgui ImGuizmo)
+
+add_library("imguizmo" STATIC ${IMGUIZMO_GLOB})
+target_include_directories("imguizmo" PUBLIC ${IMGUIZMO_PATH})
+target_include_directories(r8ge PUBLIC ${IMGUIZMO_PATH})
+target_link_libraries("imguizmo" PRIVATE imgui)
+
+
 
 # Conditional compilation based on build type
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")

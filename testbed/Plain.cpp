@@ -1,5 +1,5 @@
 #include <r8ge/r8ge.h>
-
+#include <r8ge/video.h>
 
 class GameLayer : public r8ge::Layer {
 

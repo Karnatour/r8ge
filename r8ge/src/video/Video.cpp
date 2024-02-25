@@ -3,14 +3,18 @@
 #include <r8ge/r8ge.h>
 #include <iostream>
 
+#include "renderingService/openGL/GLTexture.h"
+#include "renderingService/programManager/Program.h"
 #include "renderer/Camera.h"
 #include "renderingService/openGL/GLFrameBuffer.h"
 #include "renderer/Scene.h"
 #include "GLFW/glfw3.h"
 
 
+#include "types/SceneHelper.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 namespace r8ge {
     float deltaTime = 0.0f;    // time between current frame and last frame

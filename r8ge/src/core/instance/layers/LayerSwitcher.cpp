@@ -51,8 +51,10 @@ namespace r8ge {
                 return;
         }
 
+        /*
         if(!e->isHandled())
         R8GE_LOG("Event `{}` was not handled", e->to_string()); // TODO: log to event_log_unhandled file
+         */
     }
 
     void LayerSwitcher::updateAll() const {

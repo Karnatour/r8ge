@@ -4,7 +4,6 @@
 
 #include "GLTexture.h"
 #include "../../renderingService/openGL/GLConvertor.h"
-#include "stb_image.h"
 #include <GL/glew.h>
 
 
@@ -49,7 +48,8 @@ namespace r8ge {
                                 GL_UNSIGNED_BYTE, getImageData());
             glGenerateTextureMipmap(m_texture);
             R8GE_LOG("Created TextureSubImage2D for texture with ID:{}", m_texture);
-            stbi_image_free(m_imageData);
+            //TODO:FIX
+            //stbi_image_free(m_imageData);
         }
 
         void GLTexture::updateData(void *data) {
@@ -90,7 +90,8 @@ namespace r8ge {
                                 GL_UNSIGNED_BYTE, texture2D.getImageData());
             glGenerateTextureMipmap(m_texture);
             R8GE_LOG("Created TextureSubImage2D for texture with ID:{}", m_texture);
-            stbi_image_free(m_imageData);
+            //TODO:FIX
+            //stbi_image_free(m_imageData);
         }
 
         void GLTexture::bindTexture(unsigned int unit) const {

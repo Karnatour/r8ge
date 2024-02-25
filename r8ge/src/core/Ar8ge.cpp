@@ -1,7 +1,13 @@
 #include "../r8gepch.h"
 #include "Ar8ge.h"
 
+#include "Logger.h"
+
+#include "instance/GameInstance.h"
+
+
 #include "events/Dispatcher.h"
+#include "events/EngineEvents.h"
 #include "Input.h"
 
 namespace r8ge {

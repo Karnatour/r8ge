@@ -26,7 +26,7 @@ namespace r8ge {
             std::vector<GLTexture> m_textures;
             std::shared_ptr<video::RenderingService> m_renderingService;
             std::string m_name;
-            bool m_firstRenderLoop;
+            bool m_firstRenderLoop=false;
         };
 
     } // r8ge

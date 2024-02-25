@@ -2,6 +2,9 @@
 
 #include "Core.h"
 
+#include <string>
+#include <vector>
+
 namespace r8ge {
     struct EntryPointData {
         std::vector<std::string_view> argv;

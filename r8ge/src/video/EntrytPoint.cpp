@@ -29,5 +29,4 @@ namespace r8ge {
         video.exit();
     }
 
-    video::EntryPoint entryPoint;
 }

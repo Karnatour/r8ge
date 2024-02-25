@@ -7,12 +7,22 @@
 #pragma warning(pop)
 
 namespace r8ge {
+    class Logger;
+    namespace global {
+    extern Logger* logger;
+}
     class Logger{
     public:
-        static void init();
+        Logger();
+        ~Logger();
+        void logLoop();
+        void init();
         static std::shared_ptr<spdlog::logger>& getLogger() { return s_Logger; }
     private:
         static std::shared_ptr<spdlog::logger> s_Logger;
+        std::thread m_thread;
+        std::mutex m_mutex;
+        bool m_running;
     };
 }
 

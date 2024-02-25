@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core.h"
+#include "events/EventQueue.h"
 #include "instance/GameInstance.h"
 
 #include "InputStator.h"
