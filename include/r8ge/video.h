@@ -1,17 +1,13 @@
-/**
- *  AUTHOR:         Ondrej Nedojedly (https://www.github.com/ondranedo)
- *  DATE:           2023-10-24
- *  DESCRIPTION:    The main header file for the r8ge video module.
- *  LICENSE:        "../../LICENSE"
- *
- *
- */
+//
+// Created by Vojta on 25.02.2024.
+//
 
-#ifndef R8GE_VIDEO_H
-#define R8GE_VIDEO_H
+#ifndef R8GE_PROJECT_VIDEO_H
+#define R8GE_PROJECT_VIDEO_H
 
-#include "../../r8ge-video/Video.h"
+#include "../../r8ge/src/video/Video.h"
 
-#include "../../r8ge-video/types/Color.h"
+#include "../../r8ge/src/video/types/Color.h"
 
-#endif//!R8GE_VIDEO_H
+
+#endif //R8GE_PROJECT_VIDEO_H

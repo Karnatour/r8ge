@@ -1,7 +1,6 @@
-install
-build
 .idea
 demo
 .vs
 CMakeSettings.json
 cmake-build-debug
+install
