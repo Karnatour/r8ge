@@ -31,7 +31,7 @@ namespace r8ge {
             void updateCameraVectors();
             glm::vec3 m_Position, m_WorldUp;
             glm::vec3 m_Front, m_Up, m_Right;
-            float m_Yaw = -90.0f, m_Pitch = 0.0f, m_MovementSpeed = 2.5f, m_MouseSensitivity = 0.1f, m_Zoom = 45.0f;
+            float m_Yaw = -90.0f, m_Pitch = 0.0f, m_MovementSpeed = 1.0f, m_MouseSensitivity = 0.1f, m_Zoom = 45.0f;
         };
 
     } // r8ge

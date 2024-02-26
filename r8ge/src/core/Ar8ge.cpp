@@ -6,9 +6,11 @@
 #include "instance/GameInstance.h"
 
 
+#include "TimeStep.h"
 #include "events/Dispatcher.h"
 #include "events/EngineEvents.h"
 #include "Input.h"
+#include "GLFW/glfw3.h"
 
 namespace r8ge {
     std::function<void(std::shared_ptr<Event>)> Ar8ge::m_layerSwitcherCallback = nullptr;
@@ -66,8 +68,10 @@ namespace r8ge {
         R8GE_LOG("Engine application starting main loop");
 
         while(isRunning()) {
-
-            m_game->update();
+            double time = glfwGetTime();
+            TimeStep timestep(time - m_lastFrameRenderTime);
+            m_lastFrameRenderTime = time;
+            m_game->update(timestep);
             m_game->onUpdate();
             m_queue.emptyQueue();
         }

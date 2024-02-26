@@ -54,7 +54,7 @@ namespace r8ge {
             size_t m_mainWindowWidth, m_mainWindowHeight;
             std::string m_mainWindowTitle;
             bool m_Vsync = false;
-            GLFWwindow *m_mainWindow;
+            GLFWwindow *m_mainWindow = nullptr;
             r8ge::video::GLFrameBuffer* m_frameBuffer = nullptr;
             ResizeCallback m_resizeCallback;
         };

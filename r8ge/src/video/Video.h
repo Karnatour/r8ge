@@ -29,6 +29,7 @@ namespace r8ge {
         static std::shared_ptr<video::RenderingService> s_renderingService;
         static std::shared_ptr<video::GUIService> s_guiService;
         static bool s_isReady;
+        double m_lastFrameRenderTime = 0;
     };
 }
 

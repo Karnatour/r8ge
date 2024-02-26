@@ -18,8 +18,6 @@ namespace r8ge {
         while(!Ar8ge::isReady())
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
-        // TODO: Get data from core
-
         Video video;
 
         video.init();
