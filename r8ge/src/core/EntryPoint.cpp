@@ -14,7 +14,7 @@ namespace r8ge {
         auto engine = new Ar8ge;
 
         engine->init();
-        r8ge::video::EntryPoint entryPoint;
+        video::EntryPoint video;
         engine->run();
         engine->exit();
 

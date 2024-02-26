@@ -56,7 +56,7 @@ namespace r8ge {
         void sendEvent(const std::shared_ptr<Event>& e) const;
 
         // Updates all the layers, starting from the most bottom layer; layer[0] -> layer[n]
-        void updateAll() const;
+        void updateAll(TimeStep timestep) const;
 
         // Renders all the layers, starting from the most bottom layer; layer[0] -> layer[n]
         void renderAll() const;

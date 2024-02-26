@@ -110,6 +110,8 @@ add_library(r8ge STATIC
         src/video/windowingService/WindowingService.h
         src/video/windowingService/linux-impl/glfw/Convertor.h
         src/video/windowingService/linux-impl/glfw/Convertor.cpp
+        src/core/TimeStep.cpp
+        src/core/TimeStep.h
 )
 
 # Specify the precompiled header
@@ -127,6 +129,9 @@ target_link_libraries(r8ge PRIVATE assimp)
 target_include_directories(r8ge PUBLIC vendor/stb)
 add_compile_definitions(STB_IMAGE_IMPLEMENTATION)
 
+set(GLFW_BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 add_subdirectory(vendor/glfw)
 target_include_directories(r8ge PUBLIC vendor/glfw/include)
 target_link_libraries(r8ge PRIVATE glfw)
@@ -184,7 +189,6 @@ add_library("imguizmo" STATIC ${IMGUIZMO_GLOB})
 target_include_directories("imguizmo" PUBLIC ${IMGUIZMO_PATH})
 target_include_directories(r8ge PUBLIC ${IMGUIZMO_PATH})
 target_link_libraries("imguizmo" PRIVATE imgui)
-
 
 
 # Conditional compilation based on build type

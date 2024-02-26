@@ -3,4 +3,5 @@ demo
 .vs
 CMakeSettings.json
 cmake-build-debug
+cmake-build-release
 install
