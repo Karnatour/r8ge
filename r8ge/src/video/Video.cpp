@@ -2,31 +2,23 @@
 
 #include <r8ge/r8ge.h>
 
-#include "renderer/Camera.h"
 #include "renderingService/openGL/GLFrameBuffer.h"
 #include "renderer/Scene.h"
-#include "GLFW/glfw3.h"
-
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
 namespace r8ge {
-    video::Camera cam(0.0f, 0.0f, 3.0f, 0.0f, 1.0f, -1.0f);
     std::shared_ptr<video::WindowingService> Video::s_windowingService = nullptr;
     std::shared_ptr<video::RenderingService> Video::s_renderingService = nullptr;
     std::shared_ptr<video::GUIService> Video::s_guiService = nullptr;
+    std::shared_ptr<TimeStep> Video::s_timestep = nullptr;
     video::GLFrameBuffer frameBuffer;
     video::Scene scene("Main scene");
 
 
     Video::Video() : m_title("R8GE-video Engine") {
-        // TODO: Config file, rendering API
         s_renderingService = video::RenderingService::create(video::RenderingService::API::OpenGL);
-
         s_windowingService = video::WindowingService::create();
         s_guiService = video::GUIService::create();
+        s_timestep = std::make_shared<TimeStep>();
 
         s_windowingService->setKeyPressedCallback(Input::getKeyActionCallback());
         s_windowingService->setMousePressedCallback(Input::getMouseActionCallback());
@@ -57,12 +49,11 @@ namespace r8ge {
         s_windowingService->setFrameBuffer(frameBuffer);
         frameBuffer.setBuffer(s_windowingService->getWidth(), s_windowingService->getHeight());
         while (Ar8ge::isRunning()) {
-            //TODO: Replace this second timestep
             double time = glfwGetTime();
-            TimeStep timestep(time - m_lastFrameRenderTime);
+            s_timestep->setTime(time - m_lastFrameRenderTime);
             m_lastFrameRenderTime = time;
 
-            scene.changeCamera(static_cast<float>(timestep.getSeconds()));
+            scene.changeCamera(static_cast<float>(s_timestep->getSeconds()));
 
             s_guiService->beginFrame();
 
@@ -74,7 +65,6 @@ namespace r8ge {
             scene.render();
 
             s_guiService->insertSceneIntoSceneItems(scene);
-            s_guiService->showDemoWindow();
 
             frameBuffer.unbind();
 
@@ -93,6 +83,7 @@ namespace r8ge {
 
         s_windowingService->exit();
         s_renderingService->exit();
+        s_guiService->exit();
 
         R8GE_LOG_INFOR("R8GE-Video released");
     }
@@ -109,4 +100,7 @@ namespace r8ge {
         return s_guiService;
     }
 
+    std::shared_ptr<TimeStep> Video::getTimeStep(){
+        return s_timestep;
+    }
 }

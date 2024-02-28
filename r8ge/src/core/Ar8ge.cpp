@@ -68,10 +68,7 @@ namespace r8ge {
         R8GE_LOG("Engine application starting main loop");
 
         while(isRunning()) {
-            double time = glfwGetTime();
-            TimeStep timestep(time - m_lastFrameRenderTime);
-            m_lastFrameRenderTime = time;
-            m_game->update(timestep);
+            m_game->update();
             m_game->onUpdate();
             m_queue.emptyQueue();
         }

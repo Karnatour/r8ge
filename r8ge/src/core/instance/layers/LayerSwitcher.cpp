@@ -57,9 +57,9 @@ namespace r8ge {
          */
     }
 
-    void LayerSwitcher::updateAll(TimeStep timestep) const {
+    void LayerSwitcher::updateAll() const {
         for(auto& l : m_layers)
-            l->update(timestep);
+            l->update();
     }
 
     void LayerSwitcher::renderAll() const {

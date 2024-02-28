@@ -4,6 +4,7 @@
 #include "windowingService/WindowingService.h"
 #include "renderingService/RenderingService.h"
 #include "guiService/GUIService.h"
+#include "../core/TimeStep.h"
 #include <memory>
 
 namespace r8ge {
@@ -23,12 +24,13 @@ namespace r8ge {
         static std::shared_ptr<video::WindowingService> getWindowingService();
         static std::shared_ptr<video::RenderingService> getRenderingService();
         static std::shared_ptr<video::GUIService> getGUIService();
-
+        static std::shared_ptr<TimeStep> getTimeStep();
     private:
         static std::shared_ptr<video::WindowingService> s_windowingService;
         static std::shared_ptr<video::RenderingService> s_renderingService;
         static std::shared_ptr<video::GUIService> s_guiService;
         static bool s_isReady;
+        static std::shared_ptr<TimeStep> s_timestep;
         double m_lastFrameRenderTime = 0;
     };
 }

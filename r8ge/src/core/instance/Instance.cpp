@@ -9,8 +9,8 @@ namespace r8ge {
         m_layerSwitecher.sendEvent(event);
     }
 
-    void Instance::update(TimeStep timestep) {
-        m_layerSwitecher.updateAll(timestep);
+    void Instance::update() {
+        m_layerSwitecher.updateAll();
         m_layerSwitecher.renderAll();
 
     }
