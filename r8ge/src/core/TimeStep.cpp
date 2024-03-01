@@ -4,8 +4,13 @@
 
 #include "TimeStep.h"
 
-namespace r8ge {
-    TimeStep::TimeStep(double time)
+namespace r8ge
+{
+    TimeStep::TimeStep(const double time): m_time(time)
+    {
+    }
+
+    void TimeStep::setTime(const double time)
     {
         m_time = time;
     }

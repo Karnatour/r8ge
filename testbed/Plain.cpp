@@ -11,8 +11,8 @@ public:
 
     }
 
-    void update(const r8ge::TimeStep timestep) override {
-        //R8GE_LOG("Timestep: {} FPS: {}",timestep.getSeconds(),1/timestep.getSeconds());
+    void update() override {
+        R8GE_LOG("Timestep: {} FPS: {}",r8ge::Video::getTimeStep()->getSeconds(),1/r8ge::Video::getTimeStep()->getSeconds());
     }
 
     void event(const std::shared_ptr<r8ge::Event> &event) override {

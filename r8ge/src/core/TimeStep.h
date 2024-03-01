@@ -11,6 +11,9 @@ namespace r8ge
     {
     public:
         explicit TimeStep(double time = 0);
+
+        void setTime(double time);
+
         [[nodiscard]] double getSeconds() const;
 
         [[nodiscard]] double getMilliseconds() const;
