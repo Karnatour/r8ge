@@ -112,6 +112,12 @@ add_library(r8ge STATIC
         src/video/windowingService/linux-impl/glfw/Convertor.cpp
         src/core/TimeStep.cpp
         src/core/TimeStep.h
+        src/core/PhysicsManager.cpp
+        src/core/PhysicsManager.h
+        src/video/renderingService/openGL/GLLighting.cpp
+        src/video/renderingService/openGL/GLLighting.h
+        src/video/renderingService/openGL/GLSkyBox.cpp
+        src/video/renderingService/openGL/GLSkyBox.h
 )
 
 # Specify the precompiled header

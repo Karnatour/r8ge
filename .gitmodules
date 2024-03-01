@@ -17,12 +17,12 @@
 [submodule "r8ge-video/vendor/assimp"]
 	path = r8ge/vendor/assimp
 	url = https://github.com/assimp/assimp
-[submodule "r8ge-video/vendor/JoltPhysics"]
-	path = r8ge-video/vendor/JoltPhysics
-	url = https://github.com/jrouwe/JoltPhysics
 [submodule "r8ge-core/vendor/spdlog"]
 	path = r8ge/vendor/spdlog
 	url = https://github.com/gabime/spdlog
 [submodule "r8ge/vendor/glew-cmake"]
 	path = r8ge/vendor/glew-cmake
 	url = https://github.com/Perlmint/glew-cmake
+[submodule "r8ge/vendor/JoltPhysics"]
+	path = r8ge/vendor/JoltPhysics
+	url = https://github.com/jrouwe/JoltPhysics

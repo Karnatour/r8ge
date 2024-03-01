@@ -62,6 +62,7 @@ namespace r8ge {
             Scene &m_scene;
             std::string m_name;
 
+
         };
 
         class EntityModel : public Entity {
