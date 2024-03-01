@@ -24,7 +24,7 @@ namespace r8ge {
 
         // Called every frame, this function should handle the update to layer switcher
         // and the logic, and the rendering
-        void update(TimeStep timestep);
+        void update();
 
         // Returns the reference to the layer switcher, used to add/remove layers
         [[nodiscard]] LayerSwitcher& layerSwitcher();
