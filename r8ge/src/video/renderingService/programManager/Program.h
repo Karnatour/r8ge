@@ -5,12 +5,11 @@
 
 #include "../buffers/VertexBufferLayout.h"
 
-
 namespace r8ge {
     namespace video {
         class Program {
         public:
-            explicit Program(std::string_view source);
+            explicit Program(const std::string &source);
 
             [[nodiscard]] bool isValid() const;
 
@@ -18,7 +17,6 @@ namespace r8ge {
 
             [[nodiscard]] VertexBufferLayout getLayout() const;
 
-            // TODO: Layout should be read from shader
             void setLayout(const VertexBufferLayout &layout);
 
             [[nodiscard]] size_t getId() const;

@@ -4,6 +4,8 @@
 
 #include "Model.h"
 
+#include "assimp/postprocess.h"
+
 namespace r8ge {
     namespace video {
         Model::Model(const std::string &path) {

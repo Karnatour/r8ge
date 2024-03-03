@@ -9,51 +9,32 @@ namespace r8ge
     {
         GLSkyBox::GLSkyBox() = default;
 
-        GLSkyBox::GLSkyBox(const std::vector<std::string>& paths)
-        {
-            auto getInternalFormat = [](int channels)
-            {
-                switch (channels)
-                {
-                    case 3:
-                        return GLConvertor::convertImageFormatToGLInternalFormat(ImageFormat::RGB8);
-                    case 4:
-                        return GLConvertor::convertImageFormatToGLInternalFormat(ImageFormat::RGBA8);
-                }
-            };
+        GLSkyBox::GLSkyBox(const std::vector<std::string> &paths) {
+            glGenTextures(1, &m_skybox);
+            glBindTexture(GL_TEXTURE_CUBE_MAP, m_skybox);
 
-            auto getFormat = [](int channels)
-            {
-                switch (channels)
-                {
-                    case 3:
-                        return GLConvertor::convertImageFormatToGLFormat(Format::RGB);
-                    case 4:
-                        return GLConvertor::convertImageFormatToGLFormat(Format::RGBA);
-                }
-            };
-
-            glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &m_skybox);
-
-            glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
             glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-            for (const auto& i : paths)
+            for (auto i = 0; i < paths.size(); i++)
             {
-                Texture2D temp(i,false);
-                glTextureStorage2D(m_skybox, 1, getInternalFormat(temp.getChannelsCount()), temp.getWidth(),
-                                   temp.getHeight());
-                glTextureSubImage2D(m_skybox, 0, 0, 0, temp.getWidth(), temp.getHeight(),
-                                    getFormat(temp.getChannelsCount()),
-                                    GL_UNSIGNED_BYTE, temp.getImageData());
-                R8GE_LOG("Created TextureSubImage2D for skybox with ID:{}", m_skybox);
-                //TODO:FIX
-                //stbi_image_free(temp.m_imageData);
+                Texture2D temp(paths[i], false);
+                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, temp.getWidth(),
+                             temp.getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, temp.getImageData());
             }
+
+            R8GE_LOG("Created TextureImage2D for skybox with ID:{}", m_skybox);
         }
 
+        unsigned int GLSkyBox::getSkybox() {
+            return m_skybox;
+        }
+
+        void GLSkyBox::bindSkybox() {
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_CUBE_MAP, m_skybox);
+        }
     } // r8ge
 } // video

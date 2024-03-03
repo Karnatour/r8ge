@@ -32,7 +32,6 @@ namespace r8ge {
 
     void InputStator::sendMouseAction(const Key &code, IOAction action) {
         m_keyPressedMap[code] = (action == IOAction::PRESS);
-
         EventPayload payload;
         payload.setCallback(Ar8ge::getInstanceLayerSwitcherCallback());
         IOStroke stroke = {code, m_shiftPressed, m_ctrlPressed, m_altPressed, m_superPressed};
@@ -41,10 +40,19 @@ namespace r8ge {
         else
             payload.setEvent(std::make_shared<MouseReleased>(stroke));
         Ar8ge::getEventQueue()(payload);
+
+    }
+
+    void InputStator::sendMouseOffset(const double &x, const double &y) {
+        m_mouseOffset = {x, y};
     }
 
     std::function<void(const r8ge::Key &, IOAction)> InputStator::getMouseActionCallback() {
         return [this](auto && PH1, auto && PH2) { sendMouseAction(std::forward<decltype(PH1)>(PH1), std::forward<decltype(PH2)>(PH2)); };
+    }
+
+    std::function<void(double,double)> InputStator::getMouseOffsetCallback() {
+        return [this](auto && PH1, auto && PH2) { sendMouseOffset(std::forward<decltype(PH1)>(PH1), std::forward<decltype(PH2)>(PH2)); };
     }
 
     std::function<void(const r8ge::Key &, IOAction)> InputStator::getKeyActionCallback() {
@@ -65,6 +73,14 @@ namespace r8ge {
 
     bool InputStator::isSuperPressed() const {
         return m_superPressed;
+    }
+
+    bool InputStator::isMouseMoved() const {
+        return m_mouseOffset.first != 0 || m_mouseOffset.second != 0;
+    }
+
+    std::pair<float, float> InputStator::getMouseOffset() {
+        return m_mouseOffset;
     }
 
     bool InputStator::isKeyPressed(const std::initializer_list<Key>& code, Modifier modifier) const {

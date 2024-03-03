@@ -2,15 +2,13 @@
 // Created by karnatour on 8.2.24.
 //
 
-#ifndef R8GE_SCENEHELPER_H
-#define R8GE_SCENEHELPER_H
-
+#pragma once
 
 namespace r8ge {
     struct Transformation {
-        glm::mat4 model;
-        glm::mat4 view;
-        glm::mat4 projection;
+        glm::mat4 model = glm::mat4(1.0f);
+        glm::mat4 view = glm::mat4(0.0f);
+        glm::mat4 projection = glm::mat4(0.0f);
     };
 
     struct Material {
@@ -41,7 +39,6 @@ namespace r8ge {
             6, 7, 3
     };
 
-// Define the vertices for a cube with red color
     inline std::vector<VertexColorTexture3D> cubeVertices = {
             {-1.0f, -1.0f, 1.0f,  ColorRGBA(1.0f, 0.0f, 0.0f,
                                             1.0f), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f},
@@ -62,5 +59,44 @@ namespace r8ge {
                                             1.0f), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f}
     };
 
+    inline std::vector<unsigned int> skyboxIndices = {
+        1, 2, 6,
+        6, 5, 1,
+        // Left
+        0, 4, 7,
+        7, 3, 0,
+        // Top
+        4, 5, 6,
+        6, 7, 4,
+        // Bottom
+        0, 3, 2,
+        2, 1, 0,
+        // Back
+        0, 1, 5,
+        5, 4, 0,
+        // Front
+        3, 7, 6,
+        6, 2, 3
+    };
+
+    inline std::vector<Vertex3D> skyboxVertices = {
+        {-1.0, -1.0, 1.0},
+        {1.0, -1.0, 1.0},
+        {1.0, -1.0, -1.0},
+        {-1.0, -1.0, -1.0},
+        {-1.0, 1.0, 1.0},
+        {1.0, 1.0, 1.0},
+        {1.0, 1.0, -1.0},
+        {-1.0, 1.0, -1.0},
+    };
+
+    inline std::vector<std::string> skyboxLocations = {
+        "Engine/Skybox/right.png",
+        "Engine/Skybox/left.png",
+        "Engine/Skybox/top.png",
+        "Engine/Skybox/bottom.png",
+        "Engine/Skybox/front.png",
+        "Engine/Skybox/back.png"
+
+    };
 }
-#endif //R8GE_SCENEHELPER_H

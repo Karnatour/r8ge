@@ -118,6 +118,8 @@ add_library(r8ge STATIC
         src/video/renderingService/openGL/GLLighting.h
         src/video/renderingService/openGL/GLSkyBox.cpp
         src/video/renderingService/openGL/GLSkyBox.h
+        src/video/renderer/SkyBox.cpp
+        src/video/renderer/SkyBox.h
 )
 
 # Specify the precompiled header

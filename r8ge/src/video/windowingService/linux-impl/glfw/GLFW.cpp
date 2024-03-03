@@ -23,15 +23,14 @@ namespace r8ge {
 
             if (!glfwInit()) {
                 R8GE_LOG_ERROR("Unable to init GLFW");
-            }
-            else {
+            } else {
                 R8GE_LOG("GLFW Initialized running version `{}`", glfwGetVersionString());
             }
 
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
             glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
-            glfwWindowHint(GLFW_DOUBLEBUFFER,true);
+            glfwWindowHint(GLFW_DOUBLEBUFFER, true);
         }
 
 
@@ -45,7 +44,7 @@ namespace r8ge {
             R8GE_LOG("GLFW Window is being creating `{}`", title);
 
             m_mainWindow = glfwCreateWindow(
-                    static_cast<int>(width), static_cast<int>(height), title.c_str(), nullptr, nullptr);
+                static_cast<int>(width), static_cast<int>(height), title.c_str(), nullptr, nullptr);
 
             if (!m_mainWindow) {
                 glfwTerminate();
@@ -56,6 +55,9 @@ namespace r8ge {
             m_mainWindowCreated = true;
             m_mainWindowHeight = height;
             m_mainWindowWidth = width;
+
+            m_lastX = static_cast<float>(width) / 2.0f;
+            m_lastY = static_cast<float>(height) / 2.0f;
 
             R8GE_LOG_INFOR("GLFW Main window `{}` created", title.data());
 
@@ -73,7 +75,7 @@ namespace r8ge {
             }
             glfwSetWindowUserPointer(m_mainWindow, this);
 
-            setResizeCallback([](int width, int height, r8ge::video::GLFrameBuffer& buffer) {
+            setResizeCallback([](int width, int height, r8ge::video::GLFrameBuffer &buffer) {
                 buffer.rescaleFrameBuffer(width, height);
             });
 
@@ -90,17 +92,16 @@ namespace r8ge {
                             break;
                         case GLFW_RELEASE:
                             instance->m_keyActionCallback(code, IOAction::RELEASE);
-                            R8GE_LOG("Released key {}",to_string(code));
+                            R8GE_LOG("Released key {}", to_string(code));
                             break;
-                            /* TODO Add Repeat ??
-                        case GLFW_REPEAT:
-                            instance->m_keyActionCallback(code, IOAction::REPEAT);
-                            break;
-                             */
+                        /* TODO Add Repeat ??
+                    case GLFW_REPEAT:
+                        instance->m_keyActionCallback(code, IOAction::REPEAT);
+                        break;
+                         */
                         default:
                             break;
                     }
-
                 }
             });
 
@@ -112,10 +113,10 @@ namespace r8ge {
 
                     switch (action) {
                         case GLFW_PRESS:
-                            instance->m_keyActionCallback(code, IOAction::PRESS);
+                            instance->m_mouseActionCallback(code, IOAction::PRESS);
                             break;
                         case GLFW_RELEASE:
-                            instance->m_keyActionCallback(code, IOAction::RELEASE);
+                            instance->m_mouseActionCallback(code, IOAction::RELEASE);
                             break;
                         default:
                             break;
@@ -123,16 +124,6 @@ namespace r8ge {
                 }
             });
 
-            glfwSetCursorPosCallback(m_mainWindow, [](GLFWwindow *window, double xpos, double ypos) {
-                GLFW *instance = static_cast<GLFW *>(glfwGetWindowUserPointer(window));
-
-                if (instance) {
-                    EventPayload p;
-                    p.setEvent(std::make_shared<MouseMoved>(xpos, ypos));
-                    p.setCallback(Ar8ge::getInstanceLayerSwitcherCallback());
-                    Ar8ge::getEventQueue()(p);
-                }
-            });
 
             glfwSetScrollCallback(m_mainWindow, [](GLFWwindow *window, double xOffset, double yOffset) -> void {
                 GLFW *instance = static_cast<GLFW *>(glfwGetWindowUserPointer(window));
@@ -145,6 +136,8 @@ namespace r8ge {
                 }
             });
 
+            glfwSetCursorPosCallback(m_mainWindow, cursorPosCallback);
+
             glfwSetWindowSizeCallback(m_mainWindow, windowSizeCallback);
 
             glfwSetWindowCloseCallback(m_mainWindow, [](GLFWwindow *window) -> void {
@@ -155,7 +148,6 @@ namespace r8ge {
                     p.setEvent(std::make_shared<WindowClosed>());
                     p.setCallback(Ar8ge::getInstanceLayerSwitcherCallback());
                     Ar8ge::getEventQueue()(p);
-                    R8GE_LOG("Window close event");
                 }
             });
 
@@ -166,8 +158,7 @@ namespace r8ge {
                     EventPayload p;
                     if (focused) {
                         p.setEvent(std::make_shared<WindowFocus>());
-                    }
-                    else {
+                    } else {
                         p.setEvent(std::make_shared<WindowLostFocus>());
                     }
                     p.setCallback(Ar8ge::getInstanceLayerSwitcherCallback());
@@ -224,12 +215,33 @@ namespace r8ge {
             }
         }
 
+        void GLFW::cursorPosCallback(GLFWwindow *window, double xposIn, double yposIn) {
+            GLFW *instance = static_cast<GLFW *>(glfwGetWindowUserPointer(window));
+            if (instance) {
+                double xpos = xposIn;
+                double ypos = yposIn;
+
+                if (instance->m_firstMouse) {
+                    instance->m_lastX = xpos;
+                    instance->m_lastY = ypos;
+                    instance->m_firstMouse = false;
+                }
+
+                double xoffset = xpos - instance->m_lastX;
+                double yoffset = instance->m_lastY - ypos;
+
+                instance->m_lastX = xpos;
+                instance->m_lastY = ypos;
+                std::cout << "Mouse offset: " << xoffset << " " << yoffset << std::endl;
+                instance->m_mouseOffsetCallback(xoffset, yoffset);
+            }
+        }
+
         bool GLFW::setGLContext() {
             if (!m_GLContextCreated) {
                 glewInit();
                 return true;
-            }
-            else {
+            } else {
                 R8GE_LOG_WARNI("GL context already created");
                 return false;
             }
@@ -240,11 +252,11 @@ namespace r8ge {
         }
 
         void GLFW::getFramebufferSize(int width, int height) {
-            glfwGetFramebufferSize(m_mainWindow,&width,&height);
+            glfwGetFramebufferSize(m_mainWindow, &width, &height);
         }
 
-        void GLFW::setViewport(int width,int height) {
-            glViewport(0,0,width,height);
+        void GLFW::setViewport(int width, int height) {
+            glViewport(0, 0, width, height);
         }
 
         unsigned int GLFW::getWidth() {
@@ -261,7 +273,7 @@ namespace r8ge {
             glfwSwapInterval(state);
         }
 
-        bool GLFW::getVsyncState(){
+        bool GLFW::getVsyncState() {
             return m_Vsync;
         }
 
@@ -272,6 +284,5 @@ namespace r8ge {
         void GLFW::setFrameBuffer(GLFrameBuffer &frameBuffer) {
             m_frameBuffer = &frameBuffer;
         }
-
     }
 }

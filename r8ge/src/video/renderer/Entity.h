@@ -2,8 +2,7 @@
 // Created by karnatour on 5.2.24.
 //
 
-#ifndef R8GE_ENTITY_H
-#define R8GE_ENTITY_H
+#pragma once
 
 #include "Model.h"
 #include "Mesh.h"
@@ -28,7 +27,7 @@ namespace r8ge {
 
             //[[nodiscard]] virtual Entity *clone() const = 0;
 
-            void changeTexture(const Texture2D &texture);
+            virtual void changeTexture(const Texture2D &texture) = 0;
 
             void changeMaterial(const Material &material);
 
@@ -80,6 +79,8 @@ namespace r8ge {
         public:
             explicit EntityCube(Scene &scene, Mesh cubeMesh);
 
+            void changeTexture(const Texture2D &texture) override;
+
             void render() override;
 
         private:
@@ -109,4 +110,3 @@ namespace r8ge {
     } // r8ge
 } // video
 
-#endif //R8GE_ENTITY_H

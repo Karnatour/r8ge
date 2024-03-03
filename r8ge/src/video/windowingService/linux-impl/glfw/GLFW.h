@@ -4,7 +4,7 @@
 
 #include "../../WindowingService.h"
 #include "../../../renderingService/openGL/GLFrameBuffer.h"
-
+#include "../r8ge/src/video/Video.h"
 
 namespace r8ge {
     namespace video {
@@ -46,6 +46,8 @@ namespace r8ge {
 
             static void windowSizeCallback(GLFWwindow *window, int width, int height);
 
+            static void cursorPosCallback(GLFWwindow *window, double xposIn, double yposIn);
+
             void setResizeCallback(ResizeCallback callback);
 
             void setFrameBuffer(r8ge::video::GLFrameBuffer& frameBuffer) override;
@@ -57,6 +59,8 @@ namespace r8ge {
             GLFWwindow *m_mainWindow = nullptr;
             r8ge::video::GLFrameBuffer* m_frameBuffer = nullptr;
             ResizeCallback m_resizeCallback;
+            float m_lastX = 0,m_lastY = 0;
+            bool m_firstMouse = true;
         };
     }
 }

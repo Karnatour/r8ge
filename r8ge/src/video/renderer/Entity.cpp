@@ -18,7 +18,7 @@ namespace r8ge {
             std::mt19937 gen(rd());
             std::uniform_real_distribution<float> dis(0.5f, 1.0f);
             std::uniform_real_distribution<float> dis1(-1.0f, 1.0f);
-            std::uniform_real_distribution<float> dis3(-10.0f, 10.0f);
+            std::uniform_real_distribution<float> dis3(-1.0f, 1.0f);
             Video::getRenderingService()->compileProgram(m_shader);
             m_transformation.model = glm::mat4(1.0f);
             m_transformation.projection = glm::perspective(glm::radians(45.0f),
@@ -34,10 +34,6 @@ namespace r8ge {
             return m_id;
         }
 
-        void Entity::changeTexture(const Texture2D &texture) {
-            m_texture.setData(texture);
-            m_hasTexture = true;
-        }
 
         void Entity::changeMaterial(const Material &material) {
             m_material = material;
@@ -64,7 +60,6 @@ namespace r8ge {
             return m_name;
         }
 
-        //This function should be use only in gui probably
         Transformation &Entity::getTransformation() {
             return m_transformation;
         }
@@ -89,7 +84,6 @@ namespace r8ge {
             m_name = m_model.m_getNameVector()[0];
         }
 
-
         void EntityCube::render() {
             if (m_updateFunction != nullptr) {
                 m_updateFunction();
@@ -100,6 +94,13 @@ namespace r8ge {
 
         EntityCube::EntityCube(Scene &scene, Mesh cubeMesh) : Entity(scene), m_cubeMesh(std::move(cubeMesh)) {
             m_name = m_cubeMesh.getName();
+        }
+
+        void EntityCube::changeTexture(const Texture2D &texture) {
+            m_texture.setData(texture);
+            m_cubeMesh.setTexture(std::vector<GLTexture>{m_texture});
+            m_hasTexture = true;
+
         }
 
         void EntitySphere::render() {

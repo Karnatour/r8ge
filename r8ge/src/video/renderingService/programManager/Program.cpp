@@ -8,7 +8,7 @@ namespace r8ge {
 
         unsigned long Program::m_nextID = 0;
 
-        Program::Program(std::string_view source)
+        Program::Program(const std::string &source)
                 : m_valid(false), m_source(source), m_id(m_nextID++) {
             R8GE_LOG("Created program located in `{}` with assigned ID {}",m_source,m_id);
         }

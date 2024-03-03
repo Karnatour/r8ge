@@ -110,7 +110,6 @@ namespace r8ge {
             glBindVertexArray(m_vertexArrayObject);
             glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(m_indexCount), GL_UNSIGNED_INT, nullptr);
             glBindVertexArray(0);
-            glActiveTexture(GL_TEXTURE0);
         }
 
         void GLService::render(unsigned int count) const {
@@ -126,8 +125,6 @@ namespace r8ge {
             glBindVertexArray(m_vertexArrayObject);
             glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(count), GL_UNSIGNED_INT, nullptr);
             glBindVertexArray(0);
-            glActiveTexture(GL_TEXTURE0);
-
         }
 
         void GLService::setProgram(const Program &program) {

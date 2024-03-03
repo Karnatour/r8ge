@@ -1,12 +1,8 @@
-//
-// Created by karnatour on 4.2.24.
-//
-
-#ifndef R8GE_SCENE_H
-#define R8GE_SCENE_H
+#pragma once
 
 #include "Entity.h"
 #include "Camera.h"
+#include "SkyBox.h"
 #include <filesystem>
 #include <map>
 #include <utility>
@@ -16,7 +12,7 @@ namespace r8ge {
 
         class Scene {
         public:
-            explicit Scene(std::string name) : m_name(std::move(name)) {};
+            explicit Scene(std::string name) : m_name(std::move(name)),m_skyboxTransformation(nullptr) {};
 
             void init();
 
@@ -36,7 +32,11 @@ namespace r8ge {
 
             void changeCamera(float deltaTime);
 
+            void changeSkybox(const std::vector<std::string> &skyBoxLocations);
+
             void handleTreeNodeSelect(unsigned long nodeIndex);
+
+            std::vector<Program> getShaderLibrary();
 
             Camera& getCamera();
 
@@ -56,9 +56,11 @@ namespace r8ge {
             Entity *m_selectedEntityPtr = nullptr;
             std::vector<Program> m_shaderLibrary;
             std::string m_name;
+
+            Transformation* m_skyboxTransformation;
+            SkyBox m_skyBox;
+
         };
 
     } // r8ge
 } // video
-
-#endif //R8GE_SCENESTRUCTS_H

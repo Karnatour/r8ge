@@ -16,7 +16,7 @@ namespace r8ge {
     {
         double x, y;
 
-        MouseScrolled(double _x, double _y);
+        MouseScrolled(float _x, float _y);
         static Type getEventType();
     };
 

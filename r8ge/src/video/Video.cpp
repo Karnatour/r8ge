@@ -1,9 +1,12 @@
 #include "Video.h"
 
+#include <glm/ext/matrix_clip_space.hpp>
+#include <glm/ext/matrix_transform.hpp>
 #include <r8ge/r8ge.h>
 
 #include "renderingService/openGL/GLFrameBuffer.h"
 #include "renderer/Scene.h"
+#include "renderer/SkyBox.h"
 
 namespace r8ge {
     std::shared_ptr<video::WindowingService> Video::s_windowingService = nullptr;
@@ -13,7 +16,6 @@ namespace r8ge {
     video::GLFrameBuffer frameBuffer;
     video::Scene scene("Main scene");
 
-
     Video::Video() : m_title("R8GE-video Engine") {
         s_renderingService = video::RenderingService::create(video::RenderingService::API::OpenGL);
         s_windowingService = video::WindowingService::create();
@@ -22,6 +24,7 @@ namespace r8ge {
 
         s_windowingService->setKeyPressedCallback(Input::getKeyActionCallback());
         s_windowingService->setMousePressedCallback(Input::getMouseActionCallback());
+        s_windowingService->setMouseOffsetCallback(Input::getMouseOffsetCallback());
     }
 
     Video::~Video() {
@@ -47,22 +50,43 @@ namespace r8ge {
         R8GE_LOG("Video starting to run main loop");
         scene.init();
         s_windowingService->setFrameBuffer(frameBuffer);
+        video::Program test_program("Engine/Shaders/model.glsl");
+        video::Program skyboxshader("Engine/Shaders/Skybox.glsl");
+        s_renderingService->compileProgram(test_program);
+        s_renderingService->compileProgram(skyboxshader);
+        video::Texture2D tex("Engine/Textures/tex.jpg",true);
+        //video::Model model("Engine/Models/backpack/backpack.obj");
+        video::SkyBox skybox(skyboxVertices,skyboxIndices,skyboxLocations,"skybox");
+        Transformation &temp = skybox.getSkyBoxTransformationRef();
         frameBuffer.setBuffer(s_windowingService->getWidth(), s_windowingService->getHeight());
         while (Ar8ge::isRunning()) {
             double time = glfwGetTime();
             s_timestep->setTime(time - m_lastFrameRenderTime);
             m_lastFrameRenderTime = time;
-
+            float deltatime = time - m_lastFrameRenderTime;
             scene.changeCamera(static_cast<float>(s_timestep->getSeconds()));
 
             s_guiService->beginFrame();
 
             frameBuffer.bind();
 
-            s_renderingService->setClearColor(ColorRGBA{0, 0, 30, 1.0});
+            s_renderingService->setClearColor(ColorRGBA(0, 0, 30, 255));
             s_renderingService->clear();
 
+            //if (scene.getSelectedEntity()!=nullptr) {
+            //    scene.getSelectedEntity()->changeTexture(tex);
+            //}
+            s_renderingService->setProgram(test_program);
             scene.render();
+
+            s_renderingService->setProgram(skyboxshader);
+            s_renderingService->setUniformInt(skyboxshader,"skybox",0);
+            temp.view = glm::mat4(glm::mat3(scene.getCamera().getViewMatrix()));
+            temp.projection = glm::perspective(glm::radians(45.0f),
+                                              static_cast<float>(s_windowingService->getWidth()) /
+                                              static_cast<float>(s_windowingService->getHeight()),
+                                              0.1f, 100.0f);
+            skybox.render(skyboxshader);
 
             s_guiService->insertSceneIntoSceneItems(scene);
 

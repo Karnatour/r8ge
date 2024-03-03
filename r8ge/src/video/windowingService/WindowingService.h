@@ -60,6 +60,8 @@ namespace r8ge {
 
             void setMousePressedCallback(std::function<void(const r8ge::Key &, IOAction)> callback);
 
+            void setMouseOffsetCallback(std::function<void(double, double)> callback);
+
             virtual void setFrameBuffer(r8ge::video::GLFrameBuffer& frameBuffer) = 0;
 
         protected:
@@ -67,6 +69,7 @@ namespace r8ge {
             bool m_GLContextCreated = false;
             std::function<void(const r8ge::Key &, IOAction)> m_keyActionCallback;
             std::function<void(const r8ge::Key &, IOAction)> m_mouseActionCallback;
+            std::function<void(double x, double y)> m_mouseOffsetCallback;
         };
     }
 }

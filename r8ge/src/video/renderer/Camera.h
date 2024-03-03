@@ -1,9 +1,4 @@
-//
-// Created by karnatour on 16.1.24.
-//
-
-#ifndef R8GE_CAMERA_H
-#define R8GE_CAMERA_H
+#pragma once
 
 #include <glm/glm.hpp>
 
@@ -25,16 +20,17 @@ namespace r8ge {
 
             glm::mat4 getViewMatrix();
 
-            void changeCameraPosition(float deltaTime,float xoffset, float yoffset);
+            void changeCameraPosition(float deltaTime);
 
         private:
             void updateCameraVectors();
             glm::vec3 m_Position, m_WorldUp;
             glm::vec3 m_Front, m_Up, m_Right;
-            float m_Yaw = -90.0f, m_Pitch = 0.0f, m_MovementSpeed = 1.0f, m_MouseSensitivity = 0.1f, m_Zoom = 45.0f;
+            float m_Yaw = -90.0f, m_Pitch = 0.0f, m_MovementSpeed = 2.5f, m_MouseSensitivity = 0.1f, m_Zoom = 45.0f;
+            bool m_firstMouse = true;
+            float m_lastX= 0;
+            float m_lastY= 0;
         };
 
     } // r8ge
 } // video
-
-#endif //R8GE_CAMERA_H

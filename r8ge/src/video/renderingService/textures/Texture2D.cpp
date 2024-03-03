@@ -37,6 +37,10 @@ namespace r8ge {
                 stbi_set_flip_vertically_on_load(true);
                 m_isFlipped = true;
             }
+            else {
+                stbi_set_flip_vertically_on_load(false);
+                m_isFlipped = false;
+            }
             m_imageData = stbi_load(pathToFile.c_str(), &m_width, &m_height, &m_channelsCount, 0);
             if (m_imageData == nullptr) {
                 R8GE_LOG_ERROR("Texture Error: Unable to open file `{}`", pathToFile.c_str());

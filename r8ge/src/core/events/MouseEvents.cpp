@@ -12,7 +12,7 @@ namespace r8ge {
         return Type::MOUSE_MOVED;
     }
 
-    MouseScrolled::MouseScrolled(double _x, double _y) : x(_x),y(_y) {
+    MouseScrolled::MouseScrolled(float _x, float _y) : x(_x),y(_y) {
         m_header.type = Type::MOUSE_SCROLLED;
     }
 
