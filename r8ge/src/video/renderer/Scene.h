@@ -51,7 +51,7 @@ namespace r8ge {
             std::map<unsigned long,Entity *> getEntitiesMap();
 
         private:
-            Camera m_camera = Camera(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, -1.0f);
+            Camera m_camera = Camera(glm::vec3(0.0f,0.0f,0.0f),glm::vec3(0.0f,1.0f,0.0f));
             std::map<unsigned long, Entity *> m_entities;
             Entity *m_selectedEntityPtr = nullptr;
             std::vector<Program> m_shaderLibrary;

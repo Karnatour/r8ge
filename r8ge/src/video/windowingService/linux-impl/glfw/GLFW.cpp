@@ -232,7 +232,6 @@ namespace r8ge {
 
                 instance->m_lastX = xpos;
                 instance->m_lastY = ypos;
-                std::cout << "Mouse offset: " << xoffset << " " << yoffset << std::endl;
                 instance->m_mouseOffsetCallback(xoffset, yoffset);
             }
         }
