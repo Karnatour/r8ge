@@ -15,8 +15,12 @@ namespace r8ge {
             m_mouseActionCallback = callback;
         }
 
-        void WindowingService::setMouseOffsetCallback(std::function<void(double,double )> callback) {
-            m_mouseOffsetCallback = callback;
+        void WindowingService::setMousePosCallback(std::function<void(const double &, const double & )> callback) {
+            m_mouseMoveCallback = callback;
+        }
+
+        void WindowingService::setScrollCallback(std::function<void(const double &, const double &)> callback) {
+            m_scrollCallback = callback;
         }
     }
 }

@@ -24,7 +24,7 @@ namespace video {
     void SkyBox::render(Program &shader) {
         glDepthFunc(GL_LEQUAL);
         m_renderingService->setProgram(shader);
-        //m_renderingService->setUniformInt(shader,"skybox",0);
+        m_renderingService->setUniformInt(shader,"skybox",0);
         m_renderingService->setUniformMat4(shader, "projection", m_skyBoxTransformation.projection);
         m_renderingService->setUniformMat4(shader, "view", m_skyBoxTransformation.view);
         m_skybox.bindSkybox();

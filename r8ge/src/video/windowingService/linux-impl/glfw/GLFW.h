@@ -46,8 +46,6 @@ namespace r8ge {
 
             static void windowSizeCallback(GLFWwindow *window, int width, int height);
 
-            static void cursorPosCallback(GLFWwindow *window, double xposIn, double yposIn);
-
             void setResizeCallback(ResizeCallback callback);
 
             void setFrameBuffer(r8ge::video::GLFrameBuffer& frameBuffer) override;

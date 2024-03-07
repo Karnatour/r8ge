@@ -125,18 +125,21 @@ namespace r8ge {
             });
 
 
-            glfwSetScrollCallback(m_mainWindow, [](GLFWwindow *window, double xOffset, double yOffset) -> void {
+            glfwSetScrollCallback(m_mainWindow, [](GLFWwindow *window, double xPos, double yPos) -> void {
                 GLFW *instance = static_cast<GLFW *>(glfwGetWindowUserPointer(window));
 
                 if (instance) {
-                    EventPayload p;
-                    p.setEvent(std::make_shared<MouseScrolled>(xOffset, yOffset));
-                    p.setCallback(Ar8ge::getInstanceLayerSwitcherCallback());
-                    Ar8ge::getEventQueue()(p);
+                    instance->m_scrollCallback(xPos, yPos);
                 }
             });
 
-            glfwSetCursorPosCallback(m_mainWindow, cursorPosCallback);
+            glfwSetCursorPosCallback(m_mainWindow, [](GLFWwindow *window, double xPos, double yPos) -> void {
+                GLFW *instance = static_cast<GLFW *>(glfwGetWindowUserPointer(window));
+
+                if (instance) {
+                    instance->m_mouseMoveCallback(xPos, yPos);
+                }
+            });
 
             glfwSetWindowSizeCallback(m_mainWindow, windowSizeCallback);
 
@@ -212,27 +215,6 @@ namespace r8ge {
                 p.setEvent(std::make_shared<WindowResized>(width, height));
                 p.setCallback(Ar8ge::getInstanceLayerSwitcherCallback());
                 Ar8ge::getEventQueue()(p);
-            }
-        }
-
-        void GLFW::cursorPosCallback(GLFWwindow *window, double xposIn, double yposIn) {
-            GLFW *instance = static_cast<GLFW *>(glfwGetWindowUserPointer(window));
-            if (instance) {
-                double xpos = xposIn;
-                double ypos = yposIn;
-
-                if (instance->m_firstMouse) {
-                    instance->m_lastX = xpos;
-                    instance->m_lastY = ypos;
-                    instance->m_firstMouse = false;
-                }
-
-                double xoffset = xpos - instance->m_lastX;
-                double yoffset = instance->m_lastY - ypos;
-
-                instance->m_lastX = xpos;
-                instance->m_lastY = ypos;
-                instance->m_mouseOffsetCallback(xoffset, yoffset);
             }
         }
 

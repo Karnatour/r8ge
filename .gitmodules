@@ -23,6 +23,3 @@
 [submodule "r8ge/vendor/glew-cmake"]
 	path = r8ge/vendor/glew-cmake
 	url = https://github.com/Perlmint/glew-cmake
-[submodule "r8ge/vendor/JoltPhysics"]
-	path = r8ge/vendor/JoltPhysics
-	url = https://github.com/jrouwe/JoltPhysics

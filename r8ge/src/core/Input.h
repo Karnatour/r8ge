@@ -13,13 +13,14 @@ namespace r8ge {
         [[nodiscard]] static bool isCtrlPressed();
         [[nodiscard]] static bool isAltPressed();
         [[nodiscard]] static bool isSuperPressed();
-        [[nodiscard]] static bool isMouseMoved();
-
-        [[nodiscard]] static std::pair<double,double> getMouseOffset();
 
         [[nodiscard]] static std::function<void(const r8ge::Key&, IOAction)> getKeyActionCallback();
         [[nodiscard]] static std::function<void(const r8ge::Key&, IOAction)> getMouseActionCallback();
-        [[nodiscard]] static std::function<void(double,double)> getMouseOffsetCallback();
+        [[nodiscard]] static std::function<void(const double&,const double&)> getMouseMovedCallback();
+        [[nodiscard]] static std::function<void(const double&,const double&)> getScrollCallback();
+
+        [[nodiscard]] static std::pair<double, double> getMousePos();
+        [[nodiscard]] static std::pair<double, double> getScrollPos();
 
         static void setInstance(const std::shared_ptr<InputStator>& input);
     private:

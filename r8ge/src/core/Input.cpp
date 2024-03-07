@@ -30,14 +30,6 @@ namespace r8ge {
         return s_input->isSuperPressed();
     }
 
-    bool Input::isMouseMoved() {
-        return s_input->isMouseMoved();
-    }
-
-    std::pair<double,double> Input::getMouseOffset() {
-        return s_input->getMouseOffset();
-    }
-
     std::function<void(const r8ge::Key &, IOAction)> Input::getKeyActionCallback() {
         return s_input->getKeyActionCallback();
     }
@@ -46,8 +38,20 @@ namespace r8ge {
         return s_input->getMouseActionCallback();
     }
 
-    std::function<void(double,double)> Input::getMouseOffsetCallback() {
-        return s_input->getMouseOffsetCallback();
+    std::function<void(const double&, const double&)> Input::getMouseMovedCallback() {
+        return s_input->getMouseMovedCallback();
+    }
+
+    std::function<void(const double &, const double &)> Input::getScrollCallback() {
+        return s_input->getScrollCallback();
+    }
+
+    std::pair<double, double> Input::getMousePos() {
+        return s_input->getMousePos();
+    }
+
+    std::pair<double, double> Input::getScrollPos() {
+        return s_input->getScrollPos();
     }
 
     void Input::setInstance(const std::shared_ptr<InputStator>& input) {

@@ -4,6 +4,7 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <r8ge/r8ge.h>
 
+#include "imgui.h"
 #include "renderingService/openGL/GLFrameBuffer.h"
 #include "renderer/Scene.h"
 #include "renderer/SkyBox.h"
@@ -24,7 +25,8 @@ namespace r8ge {
 
         s_windowingService->setKeyPressedCallback(Input::getKeyActionCallback());
         s_windowingService->setMousePressedCallback(Input::getMouseActionCallback());
-        s_windowingService->setMouseOffsetCallback(Input::getMouseOffsetCallback());
+        s_windowingService->setMousePosCallback(Input::getMouseMovedCallback());
+        s_windowingService->setScrollCallback(Input::getScrollCallback());
     }
 
     Video::~Video() {
@@ -63,19 +65,16 @@ namespace r8ge {
             double time = glfwGetTime();
             s_timestep->setTime(time - m_lastFrameRenderTime);
             m_lastFrameRenderTime = time;
-            float deltatime = time - m_lastFrameRenderTime;
-            scene.changeCamera(static_cast<float>(s_timestep->getSeconds()));
 
             s_guiService->beginFrame();
 
             frameBuffer.bind();
 
+
+            scene.changeCamera(s_timestep->getSeconds());
             s_renderingService->setClearColor(ColorRGBA(0, 0, 30, 255));
             s_renderingService->clear();
 
-            //if (scene.getSelectedEntity()!=nullptr) {
-            //    scene.getSelectedEntity()->changeTexture(tex);
-            //}
             s_renderingService->setProgram(test_program);
             scene.render();
 
@@ -83,9 +82,9 @@ namespace r8ge {
             s_renderingService->setUniformInt(skyboxshader,"skybox",0);
             temp.view = glm::mat4(glm::mat3(scene.getCamera().getViewMatrix()));
             temp.projection = glm::perspective(glm::radians(45.0f),
-                                              static_cast<float>(s_windowingService->getWidth()) /
-                                              static_cast<float>(s_windowingService->getHeight()),
-                                              0.1f, 100.0f);
+                                               static_cast<float>(s_windowingService->getWidth()) /
+                                               static_cast<float>(s_windowingService->getHeight()),
+                                               0.1f, 100.0f);
             skybox.render(skyboxshader);
 
             s_guiService->insertSceneIntoSceneItems(scene);
