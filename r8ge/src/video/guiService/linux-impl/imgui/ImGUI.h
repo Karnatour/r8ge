@@ -24,7 +24,7 @@ namespace r8ge {
 
             void beginFrame() override;
 
-            void render(r8ge::video::GLFrameBuffer &frameBuffer,Scene &scene) override;
+            void render(r8ge::video::GLFrameBuffer &frameBuffer,Scene &scene,PhysicsManager &physicsManager) override;
 
             void endFrame(WindowingService &service) override;
 

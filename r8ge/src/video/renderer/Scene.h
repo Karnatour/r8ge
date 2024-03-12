@@ -40,7 +40,7 @@ namespace r8ge {
 
             Camera& getCamera();
 
-            Entity* getEntity(unsigned long id);
+            static Entity* getEntity(unsigned long id);
 
             Entity* getSelectedEntity();
 
@@ -52,7 +52,7 @@ namespace r8ge {
 
         private:
             Camera m_camera = Camera(glm::vec3(0.0f,0.0f,0.0f),glm::vec3(0.0f,1.0f,0.0f));
-            std::map<unsigned long, Entity *> m_entities;
+            static std::map<unsigned long, Entity *> m_entities;
             Entity *m_selectedEntityPtr = nullptr;
             std::vector<Program> m_shaderLibrary;
             std::string m_name;

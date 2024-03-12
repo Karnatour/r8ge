@@ -7,27 +7,24 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <random>
 #include "../Video.h"
+#include "../r8ge/src/core/PhysicsManager.h"
 
 namespace r8ge {
     namespace video {
-
         unsigned long Entity::m_nextID = 0;
 
         Entity::Entity(Scene &scene) : m_id(m_nextID++), m_scene(scene) {
-            std::random_device rd;
-            std::mt19937 gen(rd());
-            std::uniform_real_distribution<float> dis(0.5f, 1.0f);
-            std::uniform_real_distribution<float> dis1(-1.0f, 1.0f);
-            std::uniform_real_distribution<float> dis3(-1.0f, 1.0f);
             Video::getRenderingService()->compileProgram(m_shader);
             m_transformation.model = glm::mat4(1.0f);
             m_transformation.projection = glm::perspective(glm::radians(45.0f),
-                                                           static_cast<float>(Video::getWindowingService()->getWidth()) /
-                                                           static_cast<float>(Video::getWindowingService()->getHeight()),
+                                                           static_cast<float>(Video::getWindowingService()->getWidth())
+                                                           /
+                                                           static_cast<float>(Video::getWindowingService()->
+                                                               getHeight()),
                                                            0.1f, 100.0f);
 
-            m_transformation.model = glm::translate(m_transformation.model, glm::vec3(dis3(gen), dis1(gen), dis1(gen)));
-            m_transformation.model = glm::scale(m_transformation.model, glm::vec3(dis(gen), dis(gen), dis(gen)));
+            m_transformation.model = glm::translate(m_transformation.model, glm::vec3(0.0f, 0.0f, 0.0f));
+            m_transformation.model = glm::scale(m_transformation.model, glm::vec3(1.0f, 1.0f, 1.0f));
         }
 
         unsigned long Entity::getEntityID() const {
@@ -72,6 +69,10 @@ namespace r8ge {
             m_isSelected = state;
         }
 
+        JPH::BodyCreationSettings Entity::getBodyCreationSettings() {
+            return m_bodyCreationSettings;
+        }
+
         void EntityModel::render() {
             if (m_updateFunction != nullptr) {
                 m_updateFunction();
@@ -94,13 +95,22 @@ namespace r8ge {
 
         EntityCube::EntityCube(Scene &scene, Mesh cubeMesh) : Entity(scene), m_cubeMesh(std::move(cubeMesh)) {
             m_name = m_cubeMesh.getName();
+            /*
+            m_bodyCreationSettings = JPH::BodyCreationSettings(new JPH::BoxShape, JPH::RVec3(1.0f, 1.0f, 1.0f),
+                                                               JPH::Quat::sIdentity(), JPH::EMotionType::Static,
+                                                               ObjectLayers::NON_MOVING);
+                                                               */
+            m_bodyCreationSettings = JPH::BodyCreationSettings(new JPH::BoxShape(JPH::Vec3(1.0f, 1.0f, 1.0f)),
+                                                               JPH::RVec3(0, 0, 0),
+                                                               JPH::Quat::sIdentity(), JPH::EMotionType::Dynamic,
+                                                               ObjectLayers::MOVING);
         }
+
 
         void EntityCube::changeTexture(const Texture2D &texture) {
             m_texture.setData(texture);
             m_cubeMesh.setTexture(std::vector<GLTexture>{m_texture});
             m_hasTexture = true;
-
         }
 
         void EntitySphere::render() {
@@ -127,6 +137,5 @@ namespace r8ge {
                                                                           m_cylinderMesh(std::move(cylinderMesh)) {
             m_name = m_cylinderMesh.getName();
         }
-
     } // r8ge
 } // video

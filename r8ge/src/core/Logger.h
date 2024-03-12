@@ -29,7 +29,7 @@ namespace r8ge {
 #define R8GE_LOG_TRACE(...) ::r8ge::Logger::getLogger()->trace(__VA_ARGS__)
 #define R8GE_LOG_INFOR(...) ::r8ge::Logger::getLogger()->info(__VA_ARGS__)
 #define R8GE_LOG_DEBUG(...) ::r8ge::Logger::getLogger()->debug(__VA_ARGS__)
-#define R8GE_LOG_WARNI(...) ::r8ge::Logger::getLogger()->trace(__VA_ARGS__)
+#define R8GE_LOG_WARNI(...) ::r8ge::Logger::getLogger()->warn(__VA_ARGS__)
 #define R8GE_LOG_ERROR(...) ::r8ge::Logger::getLogger()->error(__VA_ARGS__)
 #define R8GE_LOG_FATAL(...) ::r8ge::Logger::getLogger()->critical(__VA_ARGS__)
 

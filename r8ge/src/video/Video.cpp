@@ -1,10 +1,10 @@
 #include "Video.h"
 
 #include <glm/ext/matrix_clip_space.hpp>
-#include <glm/ext/matrix_transform.hpp>
 #include <r8ge/r8ge.h>
 
 #include "imgui.h"
+#include "../core/PhysicsManager.h"
 #include "renderingService/openGL/GLFrameBuffer.h"
 #include "renderer/Scene.h"
 #include "renderer/SkyBox.h"
@@ -17,7 +17,10 @@ namespace r8ge {
     video::GLFrameBuffer frameBuffer;
     video::Scene scene("Main scene");
 
+    PhysicsManager physicsManager;
+
     Video::Video() : m_title("R8GE-video Engine") {
+
         s_renderingService = video::RenderingService::create(video::RenderingService::API::OpenGL);
         s_windowingService = video::WindowingService::create();
         s_guiService = video::GUIService::create();
@@ -35,13 +38,13 @@ namespace r8ge {
     }
 
     void Video::init() {
+        physicsManager.init();
         s_windowingService->init();
         s_windowingService->createMainWindow(800, 600, m_title);
         s_windowingService->setEventCallbacks();
         s_windowingService->setContextOfMainWindow();
         s_windowingService->setGLContext();
         s_windowingService->setVsync(true);
-
         s_renderingService->init();
         s_guiService->init(*s_windowingService);
         R8GE_LOG("R8GE-Video initialized");
@@ -76,6 +79,7 @@ namespace r8ge {
             s_renderingService->clear();
 
             s_renderingService->setProgram(test_program);
+            physicsManager.update();
             scene.render();
 
             s_renderingService->setProgram(skyboxshader);
@@ -91,7 +95,7 @@ namespace r8ge {
 
             frameBuffer.unbind();
 
-            s_guiService->render(frameBuffer,scene);
+            s_guiService->render(frameBuffer,scene,physicsManager);
             s_guiService->endFrame(*s_windowingService);
 
             s_windowingService->swapBuffersOfMainWindow();

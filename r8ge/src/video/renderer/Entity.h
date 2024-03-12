@@ -8,6 +8,9 @@
 #include "Mesh.h"
 #include <utility>
 
+#include <Jolt/Jolt.h>
+#include <Jolt/Physics/Body/BodyCreationSettings.h>
+
 namespace r8ge {
     namespace video {
 
@@ -41,6 +44,8 @@ namespace r8ge {
 
             void setSelectionState(bool state);
 
+            JPH::BodyCreationSettings getBodyCreationSettings();
+
             std::string getName();
 
             Transformation &getTransformation();
@@ -60,8 +65,7 @@ namespace r8ge {
             Transformation m_transformation;
             Scene &m_scene;
             std::string m_name;
-
-
+            JPH::BodyCreationSettings m_bodyCreationSettings;
         };
 
         class EntityModel : public Entity {

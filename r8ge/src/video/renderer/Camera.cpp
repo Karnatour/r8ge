@@ -55,7 +55,6 @@ namespace r8ge {
                 else if (temp.second == -1 && m_MovementSpeed >= m_minMovementSpeed) {
                     m_MovementSpeed -= 1.0f;
                 }
-                std::cout << m_MovementSpeed << std::endl;
 
                 m_Yaw += mouseMoveX;
                 m_Pitch += mouseMoveY;

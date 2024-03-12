@@ -88,11 +88,11 @@ namespace r8ge {
                     switch (action) {
                         case GLFW_PRESS:
                             instance->m_keyActionCallback(code, IOAction::PRESS);
-                            R8GE_LOG("Pressed key {}", to_string(code));
+                            //R8GE_LOG("Pressed key {}", to_string(code));
                             break;
                         case GLFW_RELEASE:
                             instance->m_keyActionCallback(code, IOAction::RELEASE);
-                            R8GE_LOG("Released key {}", to_string(code));
+                            //R8GE_LOG("Released key {}", to_string(code));
                             break;
                         /* TODO Add Repeat ??
                     case GLFW_REPEAT:

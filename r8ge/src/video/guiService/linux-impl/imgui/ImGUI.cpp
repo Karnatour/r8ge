@@ -12,6 +12,8 @@
 #include <backends/imgui_impl_opengl3.h>
 #include <backends/imgui_impl_glfw.h>
 
+#include "../../../../core/PhysicsManager.h"
+
 namespace r8ge {
     namespace video {
         std::shared_ptr<GUIService> GUIService::create() {
@@ -75,7 +77,7 @@ namespace r8ge {
         }
 
 
-        void ImGUI::render(r8ge::video::GLFrameBuffer &frameBuffer, Scene &scene) {
+        void ImGUI::render(r8ge::video::GLFrameBuffer &frameBuffer, Scene &scene,PhysicsManager &physicsManager) {
 
             renderR8GELayout();
 
@@ -89,6 +91,8 @@ namespace r8ge {
                 Mesh cubeMesh(cubeVertices, cubeIndices, emptyTextures, "Cube");
                 Entity *cubeEntity = new EntityCube(scene, cubeMesh);
                 scene.addEntity(cubeEntity);
+                physicsManager.addBody(cubeEntity);
+
             }
             ImGui::End();
 
