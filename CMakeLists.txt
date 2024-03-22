@@ -4,6 +4,10 @@ cmake_minimum_required(VERSION 3.24)
 
 project(r8ge_project LANGUAGES C CXX)
 
+if(MSVC)
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+endif()
+
 # Variables
 set(INSTALL_DIR ${CMAKE_SOURCE_DIR}/install/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE})
 

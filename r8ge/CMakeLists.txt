@@ -2,16 +2,6 @@
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED true)
 
-include(FetchContent)
-
-FetchContent_Declare(
-        JoltPhysics
-        GIT_REPOSITORY "https://github.com/jrouwe/JoltPhysics"
-        GIT_TAG "v4.0.2"
-		SOURCE_SUBDIR "Build"
-)
-FetchContent_MakeAvailable(JoltPhysics)
-
 # Add your library target
 add_library(r8ge STATIC
         src/core/Core.h
@@ -208,7 +198,20 @@ target_include_directories("imguizmo" PUBLIC ${IMGUIZMO_PATH})
 target_include_directories(r8ge PUBLIC ${IMGUIZMO_PATH})
 target_link_libraries("imguizmo" PRIVATE imgui)
 
+include(FetchContent)
 
+FetchContent_Declare(
+        JoltPhysics
+        GIT_REPOSITORY "https://github.com/jrouwe/JoltPhysics"
+        GIT_TAG "v4.0.2"
+		SOURCE_SUBDIR "Build"
+)
+FetchContent_MakeAvailable(JoltPhysics)
+
+
+
+set(INTERPROCEDURAL_OPTIMIZATION ON)
+SET_INTERPROCEDURAL_OPTIMIZATION()
 target_include_directories(r8ge PUBLIC ${JoltPhysics_SOURCE_DIR}/..)
 target_link_libraries(r8ge PRIVATE Jolt)
 
