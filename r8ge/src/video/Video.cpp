@@ -13,6 +13,7 @@ namespace r8ge {
     std::shared_ptr<video::WindowingService> Video::s_windowingService = nullptr;
     std::shared_ptr<video::RenderingService> Video::s_renderingService = nullptr;
     std::shared_ptr<video::GUIService> Video::s_guiService = nullptr;
+    bool r8ge::Video::m_firstFrameLoop = true;
     std::shared_ptr<TimeStep> Video::s_timestep = nullptr;
     video::GLFrameBuffer frameBuffer;
     video::Scene scene("Main scene");
@@ -79,8 +80,8 @@ namespace r8ge {
             s_renderingService->clear();
 
             s_renderingService->setProgram(test_program);
+            scene.render(physicsManager);
             physicsManager.update();
-            scene.render();
 
             s_renderingService->setProgram(skyboxshader);
             s_renderingService->setUniformInt(skyboxshader,"skybox",0);
@@ -95,11 +96,14 @@ namespace r8ge {
 
             frameBuffer.unbind();
 
-            s_guiService->render(frameBuffer,scene,physicsManager);
+            s_guiService->render(frameBuffer,scene);
             s_guiService->endFrame(*s_windowingService);
 
             s_windowingService->swapBuffersOfMainWindow();
             s_windowingService->poolEvents();
+            if (r8ge::Input::isKeyPressed(Key::O)){
+            m_firstFrameLoop = false;
+            }
         }
 
     }
@@ -129,5 +133,9 @@ namespace r8ge {
 
     std::shared_ptr<TimeStep> Video::getTimeStep(){
         return s_timestep;
+    }
+
+    bool Video::isFirstFrameLoop() {
+        return m_firstFrameLoop;
     }
 }

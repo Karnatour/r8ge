@@ -3,9 +3,7 @@
 
 #include <memory>
 #include "../windowingService/WindowingService.h"
-#include "../renderingService/RenderingService.h"
 #include "../renderingService/openGL/GLFrameBuffer.h"
-#include "../r8ge/src/core/PhysicsManager.h"
 #include "../renderer/Scene.h"
 
 
@@ -24,7 +22,7 @@ namespace r8ge {
             virtual void beginFrame() = 0;
 
             //TODO Replace this with rendering service after merging GLFramebuffer into GLService
-            virtual void render(GLFrameBuffer &frameBuffer,Scene &scene,PhysicsManager &physicsManager) = 0;
+            virtual void render(GLFrameBuffer &frameBuffer,Scene &scene) = 0;
 
             virtual void endFrame(WindowingService &service) = 0;
 

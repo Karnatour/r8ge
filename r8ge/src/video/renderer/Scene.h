@@ -6,6 +6,7 @@
 #include <filesystem>
 #include <map>
 #include <utility>
+#include "../r8ge/src/core/PhysicsManager.h"
 
 namespace r8ge {
     namespace video {
@@ -22,7 +23,7 @@ namespace r8ge {
 
             void copySelectedEntity();
 
-            void render();
+            void render(PhysicsManager &physicsManager);
 
             void changeTexture(const Texture2D& texture);
 

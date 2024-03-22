@@ -95,9 +95,12 @@ namespace r8ge {
             m_skyBox = SkyBox(skyboxVertices, skyboxIndices, skyboxLocations, "skybox");
         }
 
-        void Scene::render() {
+        void Scene::render(PhysicsManager &physicsManager) {
             auto it = m_entities.begin();
             while (it != m_entities.end()) {
+                if (Video::isFirstFrameLoop()) {
+                    physicsManager.addBody(it->second);
+                }
                 if (std::abs(it->second->getTransformation().model[3].x) > 10000.0f ||
                     std::abs(it->second->getTransformation().model[3].y) > 10000.0f ||
                     std::abs(it->second->getTransformation().model[3].z) > 10000.0f) {

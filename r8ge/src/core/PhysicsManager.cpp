@@ -46,18 +46,27 @@ namespace r8ge {
             return;
         }
 
+        //Already exists no need to add again
+        for (const auto &pair: m_mapBodyIDEntityIndex) {
+            if (pair.second == entity->getEntityID()) {
+                R8GE_LOG_DEBUG("Entity with ID: {} already has a body", entity->getEntityID());
+                return;
+            }
+        }
+
         JPH::BodyID id = m_bodyInterface->CreateAndAddBody(entity->getBodyCreationSettings(),
                                                            (entity->getBodyCreationSettings().mMotionType ==
                                                             JPH::EMotionType::Static
                                                                 ? JPH::EActivation::DontActivate
                                                                 : JPH::EActivation::Activate));
-        m_bodyInterface->SetLinearVelocity(id, JPH::Vec3(0.0f, -5.25f, 0.0f));
+        m_bodyInterface->SetLinearVelocity(id, JPH::Vec3(0.0f, 0.0f, 0.0f));
         m_mapBodyIDEntityIndex[id] = entity->getEntityID();
         R8GE_LOG("Physics Manager: added body with ID: {}", id.GetIndex());
     }
 
     void PhysicsManager::update() {
-        m_physicsSystem->Update(static_cast<float>(Video::getTimeStep()->getSeconds()), 1, &m_tempAllocator, m_jobSystem);
+        m_physicsSystem->Update(static_cast<float>(Video::getTimeStep()->getSeconds()), 1, &m_tempAllocator,
+                                m_jobSystem);
 
         if (m_mapBodyIDEntityIndex.empty()) {
             return;
@@ -65,7 +74,7 @@ namespace r8ge {
 
         for (auto it = m_mapBodyIDEntityIndex.begin(); it != m_mapBodyIDEntityIndex.end();) {
             JPH::RVec3 position = m_bodyInterface->GetCenterOfMassPosition(it->first);
-            video::Entity* entity = video::Scene::getEntity(it->second);
+            video::Entity *entity = video::Scene::getEntity(it->second);
 
             if (entity == nullptr) {
                 R8GE_LOG_WARNI("Entity is nullptr probably out of bounds, deleting...");
@@ -73,7 +82,9 @@ namespace r8ge {
                 m_bodyInterface->DestroyBody(it->first);
                 it = m_mapBodyIDEntityIndex.erase(it);
             } else {
-                entity->getTransformation().model = glm::translate(glm::mat4(1.0f), glm::vec3(position.GetX(), position.GetY(), position.GetZ()));
+                entity->getTransformation().model = glm::translate(glm::mat4(1.0f),
+                                                                   glm::vec3(position.GetX(), position.GetY(),
+                                                                             position.GetZ()));
                 ++it;
             }
         }

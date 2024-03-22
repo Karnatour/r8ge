@@ -25,6 +25,7 @@ namespace r8ge {
         static std::shared_ptr<video::RenderingService> getRenderingService();
         static std::shared_ptr<video::GUIService> getGUIService();
         static std::shared_ptr<TimeStep> getTimeStep();
+        static bool isFirstFrameLoop();
     private:
         static std::shared_ptr<video::WindowingService> s_windowingService;
         static std::shared_ptr<video::RenderingService> s_renderingService;
@@ -32,6 +33,7 @@ namespace r8ge {
         static bool s_isReady;
         static std::shared_ptr<TimeStep> s_timestep;
         double m_lastFrameRenderTime = 0;
+        static bool m_firstFrameLoop;
     };
 }
 

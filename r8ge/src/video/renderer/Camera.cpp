@@ -47,6 +47,10 @@ namespace r8ge {
                     m_Position -= m_Right * velocity;
                 if (r8ge::Input::isKeyPressed(r8ge::Key::D))
                     m_Position += m_Right * velocity;
+                if (r8ge::Input::isKeyPressed(r8ge::Key::Q))
+                    m_Position -= m_Up * velocity;
+                if (r8ge::Input::isKeyPressed(r8ge::Key::E))
+                    m_Position += m_Up * velocity;
 
                 temp = r8ge::Input::getScrollPos();
                 if (temp.second == 1 && m_MovementSpeed <= m_maxMovementSpeed) {

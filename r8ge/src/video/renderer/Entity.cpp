@@ -95,11 +95,6 @@ namespace r8ge {
 
         EntityCube::EntityCube(Scene &scene, Mesh cubeMesh) : Entity(scene), m_cubeMesh(std::move(cubeMesh)) {
             m_name = m_cubeMesh.getName();
-            /*
-            m_bodyCreationSettings = JPH::BodyCreationSettings(new JPH::BoxShape, JPH::RVec3(1.0f, 1.0f, 1.0f),
-                                                               JPH::Quat::sIdentity(), JPH::EMotionType::Static,
-                                                               ObjectLayers::NON_MOVING);
-                                                               */
             m_bodyCreationSettings = JPH::BodyCreationSettings(new JPH::BoxShape(JPH::Vec3(1.0f, 1.0f, 1.0f)),
                                                                JPH::RVec3(0, 0, 0),
                                                                JPH::Quat::sIdentity(), JPH::EMotionType::Dynamic,

@@ -11,6 +11,8 @@
 #include <imgui.h>
 #include <imgui_internal.h>
 
+#include "ImGuizmo.h"
+
 
 namespace r8ge {
     namespace video {
@@ -24,7 +26,7 @@ namespace r8ge {
 
             void beginFrame() override;
 
-            void render(r8ge::video::GLFrameBuffer &frameBuffer,Scene &scene,PhysicsManager &physicsManager) override;
+            void render(r8ge::video::GLFrameBuffer &frameBuffer,Scene &scene) override;
 
             void endFrame(WindowingService &service) override;
 
@@ -38,6 +40,7 @@ namespace r8ge {
         private:
             ImGuiWindowFlags windowFlags = 0;
             GLTexture m_cubeButtonTex;
+            ImGuizmo::OPERATION m_gizmoOperation = ImGuizmo::TRANSLATE;
         };
 
     } // r8ge
