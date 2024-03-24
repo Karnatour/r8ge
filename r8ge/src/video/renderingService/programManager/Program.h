@@ -9,6 +9,7 @@ namespace r8ge {
     namespace video {
         class Program {
         public:
+            Program() = default;
             explicit Program(const std::string &source);
 
             [[nodiscard]] bool isValid() const;

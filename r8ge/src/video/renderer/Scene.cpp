@@ -50,10 +50,6 @@ namespace r8ge {
             }
         }
 
-        std::vector<Program> Scene::getShaderLibrary() {
-            return m_shaderLibrary;
-        }
-
         Entity *Scene::getEntity(unsigned long id) {
             auto it = m_entities.find(id);
             if (it != m_entities.end()) {
@@ -73,10 +69,10 @@ namespace r8ge {
                 R8GE_LOG_ERROR("Engine shaders folder is missing");
             } else {
                 for (const auto &file: std::filesystem::directory_iterator("Engine/Shaders")) {
-                    m_shaderLibrary.emplace_back(file.path().string());
-                    Video::getRenderingService()->compileProgram(m_shaderLibrary.back());
+                    m_shaderLibrary.addShader(file.path().string());
                 }
             }
+            m_shaderLibrary.compileAllShaders();
             m_skyBox = SkyBox(skyboxVertices, skyboxIndices, skyboxLocations, "skybox");
 
         }
@@ -114,14 +110,15 @@ namespace r8ge {
                 ++it;
             }
 
-            Video::getRenderingService()->setProgram(m_shaderLibrary[1]);
-            Video::getRenderingService()->setUniformInt(m_shaderLibrary[1], "skybox", 0);
+            m_shaderLibrary.useShader("Skybox.glsl");
+            Video::getRenderingService()->setUniformInt(m_shaderLibrary.getShader("Skybox.glsl"), "skybox", 0);
             m_skyboxTransformationRef.view = glm::mat4(glm::mat3(m_camera.getViewMatrix()));
             m_skyboxTransformationRef.projection = glm::perspective(glm::radians(45.0f),
                                                                  Video::getGUIService()->getViewportWidth() /
                                                                  Video::getGUIService()->getViewportHeight(),
                                                                  0.1f, 100.0f);
-            m_skyBox.render(m_shaderLibrary[1]);
+            m_skyBox.render(m_shaderLibrary.getShader("Skybox.glsl"));
+
         }
 
 

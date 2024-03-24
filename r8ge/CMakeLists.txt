@@ -120,6 +120,8 @@ add_library(r8ge STATIC
         src/video/renderingService/openGL/GLSkyBox.h
         src/video/renderer/SkyBox.cpp
         src/video/renderer/SkyBox.h
+        src/video/renderingService/programManager/ShaderLibrary.cpp
+        src/video/renderingService/programManager/ShaderLibrary.h
 )
 
 # Specify the precompiled header

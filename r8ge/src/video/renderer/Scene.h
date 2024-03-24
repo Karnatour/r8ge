@@ -7,6 +7,7 @@
 #include <map>
 #include <utility>
 #include "../r8ge/src/core/PhysicsManager.h"
+#include "../renderingService/programManager/ShaderLibrary.h"
 
 namespace r8ge {
     namespace video {
@@ -37,8 +38,6 @@ namespace r8ge {
 
             void handleTreeNodeSelect(unsigned long nodeIndex);
 
-            std::vector<Program> getShaderLibrary();
-
             Camera& getCamera();
 
             static Entity* getEntity(unsigned long id);
@@ -55,7 +54,7 @@ namespace r8ge {
             Camera m_camera = Camera(glm::vec3(0.0f,0.0f,0.0f),glm::vec3(0.0f,1.0f,0.0f));
             static std::map<unsigned long, Entity *> m_entities;
             Entity *m_selectedEntityPtr = nullptr;
-            std::vector<Program> m_shaderLibrary;
+            ShaderLibrary m_shaderLibrary;
             std::string m_name;
 
             SkyBox m_skyBox;
