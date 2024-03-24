@@ -21,6 +21,10 @@ namespace video {
         setupRender();
     }
 
+    Transformation & SkyBox::getSkyBoxTransformationRef() {
+        return m_skyBoxTransformation;
+    }
+
     void SkyBox::render(Program &shader) {
         glDepthFunc(GL_LEQUAL);
         m_renderingService->setProgram(shader);
@@ -36,9 +40,6 @@ namespace video {
         return m_name;
     }
 
-    Transformation &SkyBox::getSkyBoxTransformationRef() {
-        return m_skyBoxTransformation;
-    }
 
     void SkyBox::setupRender() {
         const video::VertexBuffer vb(m_vertices, m_vertices[0].getLayout());

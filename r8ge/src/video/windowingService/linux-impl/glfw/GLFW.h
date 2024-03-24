@@ -36,9 +36,9 @@ namespace r8ge {
 
             void setViewport(int width, int height) override;
 
-            unsigned int getWidth() override;
+            float getWidth() override;
 
-            unsigned int getHeight() override;
+            float getHeight() override;
 
             void setVsync(bool state) override;
 
@@ -51,7 +51,7 @@ namespace r8ge {
             void setFrameBuffer(r8ge::video::GLFrameBuffer& frameBuffer) override;
 
         private:
-            size_t m_mainWindowWidth, m_mainWindowHeight;
+            int m_mainWindowWidth, m_mainWindowHeight;
             std::string m_mainWindowTitle;
             bool m_Vsync = false;
             GLFWwindow *m_mainWindow = nullptr;

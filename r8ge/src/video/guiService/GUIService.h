@@ -26,6 +26,10 @@ namespace r8ge {
 
             virtual void endFrame(WindowingService &service) = 0;
 
+            virtual float getViewportWidth() = 0;
+
+            virtual float getViewportHeight() = 0;
+
             virtual void insertSceneIntoSceneItems(Scene &scene) = 0;
 
             virtual void showDemoWindow() = 0;

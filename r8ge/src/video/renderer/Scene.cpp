@@ -5,6 +5,7 @@
 #include "Scene.h"
 #include "../Video.h"
 #include <glm/ext/matrix_clip_space.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 namespace r8ge {
     namespace video {
@@ -73,11 +74,11 @@ namespace r8ge {
             } else {
                 for (const auto &file: std::filesystem::directory_iterator("Engine/Shaders")) {
                     m_shaderLibrary.emplace_back(file.path().string());
+                    Video::getRenderingService()->compileProgram(m_shaderLibrary.back());
                 }
             }
-
             m_skyBox = SkyBox(skyboxVertices, skyboxIndices, skyboxLocations, "skybox");
-            m_skyboxTransformation = &m_skyBox.getSkyBoxTransformationRef();
+
         }
 
         void Scene::copySelectedEntity() {
@@ -98,7 +99,7 @@ namespace r8ge {
         void Scene::render(PhysicsManager &physicsManager) {
             auto it = m_entities.begin();
             while (it != m_entities.end()) {
-                if (Video::isFirstFrameLoop()) {
+                if (Video::m_editorMode == false) {
                     physicsManager.addBody(it->second);
                 }
                 if (std::abs(it->second->getTransformation().model[3].x) > 10000.0f ||
@@ -110,17 +111,17 @@ namespace r8ge {
                     continue;
                 }
                 it->second->render();
-                m_skyboxTransformation->view = m_camera.getViewMatrix();
-                m_skyboxTransformation->projection = glm::perspective(glm::radians(95.0f),
-                                                                      static_cast<float>(Video::getWindowingService()->
-                                                                          getWidth()) /
-                                                                      static_cast<float>(Video::getWindowingService()->
-                                                                          getHeight()),
-                                                                      0.1f, 100.0f);
-
                 ++it;
-                //m_skyBox.render(m_shaderLibrary[2]);
             }
+
+            Video::getRenderingService()->setProgram(m_shaderLibrary[1]);
+            Video::getRenderingService()->setUniformInt(m_shaderLibrary[1], "skybox", 0);
+            m_skyboxTransformationRef.view = glm::mat4(glm::mat3(m_camera.getViewMatrix()));
+            m_skyboxTransformationRef.projection = glm::perspective(glm::radians(45.0f),
+                                                                 Video::getGUIService()->getViewportWidth() /
+                                                                 Video::getGUIService()->getViewportHeight(),
+                                                                 0.1f, 100.0f);
+            m_skyBox.render(m_shaderLibrary[1]);
         }
 
 

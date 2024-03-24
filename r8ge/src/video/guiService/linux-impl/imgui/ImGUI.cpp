@@ -12,6 +12,7 @@
 #include <backends/imgui_impl_opengl3.h>
 #include <backends/imgui_impl_glfw.h>
 
+#include "../../../Video.h"
 #include "../../../../core/Input.h"
 #include "../../../../core/PhysicsManager.h"
 #include "../../../../core/events/KeyEvents.h"
@@ -75,11 +76,11 @@ namespace r8ge {
             ImGui::NewFrame();
             ImGuizmo::BeginFrame();
             ImGuizmo::Enable(true);
+            renderR8GELayout();
         }
 
 
         void ImGUI::render(r8ge::video::GLFrameBuffer &frameBuffer, Scene &scene) {
-            renderR8GELayout();
             ImGuiWindowClass window_class;
             window_class.DockNodeFlagsOverrideSet = ImGuiDockNodeFlags_NoTabBar;
 
@@ -103,6 +104,11 @@ namespace r8ge {
             ImGui::SetNextWindowClass(&window_class);
             ImGui::Begin("Viewport", nullptr, ImGuiWindowFlags_NoMove);
             {
+                if (lastViewportSize.first != getViewportWidth() || lastViewportSize.second != getViewportHeight() &&
+                    r8ge::Video::m_editorMode == true) {
+                    frameBuffer.rescaleFrameBuffer(getViewportWidth(), getViewportHeight());
+                    glViewport(0, 0, static_cast<int>(getViewportWidth()), static_cast<int>(getViewportHeight()));
+                }
                 ImGui::Image(
                     reinterpret_cast<ImTextureID>(frameBuffer.getFrameTexture()),
                     ImGui::GetContentRegionAvail(),
@@ -121,8 +127,8 @@ namespace r8ge {
                     }
                     ImGuizmo::SetOrthographic(false);
                     ImGuizmo::SetDrawlist();
-                    ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowWidth(),
-                                      ImGui::GetWindowHeight());
+                    ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, getViewportWidth(),
+                                      getViewportHeight());
                     ImGuizmo::Manipulate(glm::value_ptr(scene.getSelectedEntity()->getTransformation().view),
                                          glm::value_ptr(scene.getSelectedEntity()->getTransformation().projection),
                                          m_gizmoOperation, ImGuizmo::LOCAL,
@@ -132,6 +138,7 @@ namespace r8ge {
             ImGui::End();
 
             ImGui::Render();
+            lastViewportSize = {getViewportWidth(), getViewportHeight()};
         }
 
         void ImGUI::endFrame(WindowingService &service) {
@@ -164,8 +171,9 @@ namespace r8ge {
                             flags |= ImGuiTreeNodeFlags_Selected;
                         }
                         flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_Bullet;
-                        if (ImGui::TreeNodeEx((void *) (intptr_t) entityPair.second->getEntityID(), flags, "%s",
-                                              entityPair.second->getName().c_str())) {
+                        if (ImGui::TreeNodeEx(
+                            reinterpret_cast<void *>(static_cast<intptr_t>(entityPair.second->getEntityID())), flags,
+                            "%s", entityPair.second->getName().c_str())) {
                             if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen()) {
                                 currentSelectedEntityID = entityPair.first;
                                 R8GE_LOG_DEBUG("EntityWasSelected entity selected : {}", entityPair.first);
@@ -184,6 +192,26 @@ namespace r8ge {
             ImGui::End();
         }
 
+        float ImGUI::getViewportWidth() {
+            if (ImGuiWindow *viewportWindow = ImGui::FindWindowByName("Viewport")) {
+                return viewportWindow->Size.x;
+            }
+            else {
+                R8GE_LOG_ERROR("Viewport window not found");
+                return 0.0f;
+            }
+        }
+
+        float ImGUI::getViewportHeight() {
+            if (ImGuiWindow *viewportWindow = ImGui::FindWindowByName("Viewport")) {
+                return viewportWindow->Size.y;
+            }
+            else {
+                R8GE_LOG_ERROR("Viewport window not found");
+                return 0.0f;
+            }
+        }
+
         void ImGUI::renderR8GELayout() {
             static ImVec2 size;
 
@@ -191,7 +219,6 @@ namespace r8ge {
             if (size.x != newSize.x || size.y != newSize.y) {
                 size = newSize;
 
-                ImVec2 workCenter = ImGui::GetMainViewport()->GetWorkCenter();
                 ImGuiID id = ImGui::GetID("MainWindow");
                 ImGui::DockBuilderRemoveNode(id);
                 ImGui::DockBuilderAddNode(id);
@@ -199,10 +226,14 @@ namespace r8ge {
                 ImGui::DockBuilderSetNodeSize(id, size);
 
                 ImGuiID viewportDock = ImGui::DockBuilderSplitNode(id, ImGuiDir_Up, 1.0f, nullptr, &id);
-                ImGuiID sceneItemsDock = ImGui::DockBuilderSplitNode(viewportDock, ImGuiDir_Left, 0.25f, nullptr, &viewportDock);
-                ImGuiID parametersDock = ImGui::DockBuilderSplitNode(viewportDock, ImGuiDir_Right, 0.15f, nullptr, &viewportDock);
-                ImGuiID builderDock = ImGui::DockBuilderSplitNode(parametersDock, ImGuiDir_Up, 0.15f, nullptr, &parametersDock);
-                ImGuiID playBarDock = ImGui::DockBuilderSplitNode(viewportDock, ImGuiDir_Up, 0.05f, nullptr, &viewportDock);
+                ImGuiID sceneItemsDock = ImGui::DockBuilderSplitNode(viewportDock, ImGuiDir_Left, 0.25f, nullptr,
+                                                                     &viewportDock);
+                ImGuiID parametersDock = ImGui::DockBuilderSplitNode(viewportDock, ImGuiDir_Right, 0.15f, nullptr,
+                                                                     &viewportDock);
+                ImGuiID builderDock = ImGui::DockBuilderSplitNode(parametersDock, ImGuiDir_Up, 0.15f, nullptr,
+                                                                  &parametersDock);
+                ImGuiID playBarDock = ImGui::DockBuilderSplitNode(viewportDock, ImGuiDir_Up, 0.05f, nullptr,
+                                                                  &viewportDock);
 
                 ImGui::DockBuilderDockWindow("Viewport", viewportDock);
                 ImGui::DockBuilderDockWindow("SceneItems", sceneItemsDock);

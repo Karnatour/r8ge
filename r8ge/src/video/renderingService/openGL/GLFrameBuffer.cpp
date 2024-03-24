@@ -22,7 +22,7 @@ namespace r8ge {
 
         void GLFrameBuffer::rescaleFrameBuffer(float width, float height) {
             glBindTexture(GL_TEXTURE_2D, m_texture);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_texture, 0);
@@ -63,6 +63,9 @@ namespace r8ge {
 
             if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
                 R8GE_LOG_ERROR("Framebuffer is not complete");
+            else {
+                R8GE_LOG_INFOR("Created framebuffer with texture ID {}", m_texture);
+            }
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 

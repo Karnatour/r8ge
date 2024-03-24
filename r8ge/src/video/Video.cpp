@@ -13,7 +13,7 @@ namespace r8ge {
     std::shared_ptr<video::WindowingService> Video::s_windowingService = nullptr;
     std::shared_ptr<video::RenderingService> Video::s_renderingService = nullptr;
     std::shared_ptr<video::GUIService> Video::s_guiService = nullptr;
-    bool r8ge::Video::m_firstFrameLoop = true;
+    bool r8ge::Video::m_editorMode = true, Video::m_firstFrameLoop = true;
     std::shared_ptr<TimeStep> Video::s_timestep = nullptr;
     video::GLFrameBuffer frameBuffer;
     video::Scene scene("Main scene");
@@ -48,23 +48,19 @@ namespace r8ge {
         s_windowingService->setVsync(true);
         s_renderingService->init();
         s_guiService->init(*s_windowingService);
+        scene.init();
         R8GE_LOG("R8GE-Video initialized");
     }
 
     void Video::run() {
         glEnable(GL_DEPTH_TEST);
         R8GE_LOG("Video starting to run main loop");
-        scene.init();
         s_windowingService->setFrameBuffer(frameBuffer);
-        video::Program test_program("Engine/Shaders/model.glsl");
-        video::Program skyboxshader("Engine/Shaders/Skybox.glsl");
-        s_renderingService->compileProgram(test_program);
-        s_renderingService->compileProgram(skyboxshader);
         video::Texture2D tex("Engine/Textures/tex.jpg",true);
-        //video::Model model("Engine/Models/backpack/backpack.obj");
-        video::SkyBox skybox(skyboxVertices,skyboxIndices,skyboxLocations,"skybox");
-        Transformation &temp = skybox.getSkyBoxTransformationRef();
-        frameBuffer.setBuffer(s_windowingService->getWidth(), s_windowingService->getHeight());
+        s_guiService->beginFrame();
+        s_guiService->render(frameBuffer,scene);
+        s_guiService->endFrame(*s_windowingService);
+        frameBuffer.setBuffer(s_guiService->getViewportWidth(), s_guiService->getViewportHeight());
         while (Ar8ge::isRunning()) {
             double time = glfwGetTime();
             s_timestep->setTime(time - m_lastFrameRenderTime);
@@ -74,23 +70,11 @@ namespace r8ge {
 
             frameBuffer.bind();
 
-
             scene.changeCamera(s_timestep->getSeconds());
             s_renderingService->setClearColor(ColorRGBA(0, 0, 30, 255));
             s_renderingService->clear();
-
-            s_renderingService->setProgram(test_program);
             scene.render(physicsManager);
             physicsManager.update();
-
-            s_renderingService->setProgram(skyboxshader);
-            s_renderingService->setUniformInt(skyboxshader,"skybox",0);
-            temp.view = glm::mat4(glm::mat3(scene.getCamera().getViewMatrix()));
-            temp.projection = glm::perspective(glm::radians(45.0f),
-                                               static_cast<float>(s_windowingService->getWidth()) /
-                                               static_cast<float>(s_windowingService->getHeight()),
-                                               0.1f, 100.0f);
-            skybox.render(skyboxshader);
 
             s_guiService->insertSceneIntoSceneItems(scene);
 
@@ -102,8 +86,9 @@ namespace r8ge {
             s_windowingService->swapBuffersOfMainWindow();
             s_windowingService->poolEvents();
             if (r8ge::Input::isKeyPressed(Key::O)){
-            m_firstFrameLoop = false;
+            m_editorMode = false;
             }
+            m_firstFrameLoop = false;
         }
 
     }
@@ -133,9 +118,5 @@ namespace r8ge {
 
     std::shared_ptr<TimeStep> Video::getTimeStep(){
         return s_timestep;
-    }
-
-    bool Video::isFirstFrameLoop() {
-        return m_firstFrameLoop;
     }
 }

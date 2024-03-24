@@ -46,9 +46,9 @@ namespace r8ge {
 
             virtual void poolEvents() = 0;
 
-            virtual unsigned int getWidth() = 0;
+            virtual float getWidth() = 0;
 
-            virtual unsigned int getHeight() = 0;
+            virtual float getHeight() = 0;
 
             virtual void setVsync(bool state) = 0;
 

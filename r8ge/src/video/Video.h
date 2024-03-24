@@ -11,21 +11,27 @@ namespace r8ge {
     class Video {
     public:
         Video();
+
         ~Video();
 
         void init();
+
         void run();
+
         void exit();
 
-    private:
-        std::string m_title;
-
-    public:
         static std::shared_ptr<video::WindowingService> getWindowingService();
+
         static std::shared_ptr<video::RenderingService> getRenderingService();
+
         static std::shared_ptr<video::GUIService> getGUIService();
+
         static std::shared_ptr<TimeStep> getTimeStep();
-        static bool isFirstFrameLoop();
+
+        static bool m_firstFrameLoop;
+
+        static bool m_editorMode;
+
     private:
         static std::shared_ptr<video::WindowingService> s_windowingService;
         static std::shared_ptr<video::RenderingService> s_renderingService;
@@ -33,7 +39,7 @@ namespace r8ge {
         static bool s_isReady;
         static std::shared_ptr<TimeStep> s_timestep;
         double m_lastFrameRenderTime = 0;
-        static bool m_firstFrameLoop;
+        std::string m_title;
     };
 }
 

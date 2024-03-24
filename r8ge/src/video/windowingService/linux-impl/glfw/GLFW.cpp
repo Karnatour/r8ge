@@ -75,9 +75,11 @@ namespace r8ge {
             }
             glfwSetWindowUserPointer(m_mainWindow, this);
 
-            setResizeCallback([](int width, int height, r8ge::video::GLFrameBuffer &buffer) {
+            if (Video::m_editorMode == false){
+            setResizeCallback([](float width, float height, r8ge::video::GLFrameBuffer &buffer) {
                 buffer.rescaleFrameBuffer(width, height);
             });
+            }
 
             glfwSetKeyCallback(m_mainWindow, [](GLFWwindow *window, int key, int scancode, int action, int mods) {
                 GLFW *instance = static_cast<GLFW *>(glfwGetWindowUserPointer(window));
@@ -206,7 +208,9 @@ namespace r8ge {
                 instance->m_mainWindowWidth = width;
                 instance->m_mainWindowHeight = height;
 
+                if (Video::m_editorMode==false){
                 glViewport(0, 0, width, height);
+                }
                 if (instance->m_resizeCallback) {
                     instance->m_resizeCallback(width, height, *instance->m_frameBuffer);
                 }
@@ -240,11 +244,11 @@ namespace r8ge {
             glViewport(0, 0, width, height);
         }
 
-        unsigned int GLFW::getWidth() {
+        float GLFW::getWidth() {
             return m_mainWindowWidth;
         }
 
-        unsigned int GLFW::getHeight() {
+        float GLFW::getHeight() {
             return m_mainWindowHeight;
         }
 

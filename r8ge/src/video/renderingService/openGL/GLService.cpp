@@ -21,7 +21,7 @@ namespace r8ge {
         }
 
         GLService::~GLService() {
-            R8GE_LOG("GL Service created ID: {}",id);
+            R8GE_LOG("GL Service deleted ID: {}",id);
             id--;
         }
 

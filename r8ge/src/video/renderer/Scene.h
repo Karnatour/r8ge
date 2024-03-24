@@ -13,7 +13,7 @@ namespace r8ge {
 
         class Scene {
         public:
-            explicit Scene(std::string name) : m_name(std::move(name)),m_skyboxTransformation(nullptr) {};
+            explicit Scene(std::string name) : m_name(std::move(name)) {};
 
             void init();
 
@@ -58,9 +58,8 @@ namespace r8ge {
             std::vector<Program> m_shaderLibrary;
             std::string m_name;
 
-            Transformation* m_skyboxTransformation;
             SkyBox m_skyBox;
-
+            Transformation &m_skyboxTransformationRef = m_skyBox.getSkyBoxTransformationRef();
         };
 
     } // r8ge
