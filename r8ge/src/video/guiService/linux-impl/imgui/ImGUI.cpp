@@ -62,6 +62,7 @@ namespace r8ge {
             ImGui_ImplOpenGL3_Init("#version 460");
 
             m_cubeButtonTex = GLTexture("Engine/GUI/cube.png", true);
+            m_playButtonTex = GLTexture("Engine/GUI/play.png", true);
         }
 
         void ImGUI::exit() {
@@ -76,11 +77,14 @@ namespace r8ge {
             ImGui::NewFrame();
             ImGuizmo::BeginFrame();
             ImGuizmo::Enable(true);
-            renderR8GELayout();
         }
 
 
-        void ImGUI::render(r8ge::video::GLFrameBuffer &frameBuffer, Scene &scene) {
+        void ImGUI::renderEditorUI(r8ge::video::GLFrameBuffer &frameBuffer, Scene &scene) {
+            if (Video::m_editorMode == false) {
+                return;
+            }
+            renderR8GELayout();
             ImGuiWindowClass window_class;
             window_class.DockNodeFlagsOverrideSet = ImGuiDockNodeFlags_NoTabBar;
 
@@ -99,15 +103,21 @@ namespace r8ge {
 
             ImGui::SetNextWindowClass(&window_class);
             ImGui::Begin("PlayBar", nullptr, ImGuiWindowFlags_NoMove);
+            if (ImGui::ImageButton(reinterpret_cast<ImTextureID>(m_playButtonTex.getTexture()), ImVec2(32, 32))) {
+                Video::m_editorMode = false;
+                Video::getWindowingService()->setViewport(static_cast<int>(Video::getWindowingService()->getWindowWidth()),
+                           static_cast<int>(Video::getWindowingService()->getWindowHeight()));
+            }
             ImGui::End();
 
             ImGui::SetNextWindowClass(&window_class);
             ImGui::Begin("Viewport", nullptr, ImGuiWindowFlags_NoMove);
             {
-                if (lastViewportSize.first != getViewportWidth() || lastViewportSize.second != getViewportHeight() &&
-                    r8ge::Video::m_editorMode == true) {
+                if (lastViewportSize.first != getViewportWidth() || lastViewportSize.second !=
+                    getViewportHeight()) {
                     frameBuffer.rescaleFrameBuffer(getViewportWidth(), getViewportHeight());
-                    glViewport(0, 0, static_cast<int>(getViewportWidth()), static_cast<int>(getViewportHeight()));
+                    Video::getWindowingService()->setViewport(static_cast<int>(getViewportWidth()),
+                                                              static_cast<int>(getViewportHeight()));
                 }
                 ImGui::Image(
                     reinterpret_cast<ImTextureID>(frameBuffer.getFrameTexture()),
@@ -127,21 +137,24 @@ namespace r8ge {
                     }
                     ImGuizmo::SetOrthographic(false);
                     ImGuizmo::SetDrawlist();
-                    ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, getViewportWidth(),
-                                      getViewportHeight());
+                    ImGuizmo::SetRect(getViewportPosX(), getViewportPosY(), getViewportWidth(), getViewportHeight());
                     ImGuizmo::Manipulate(glm::value_ptr(scene.getSelectedEntity()->getTransformation().view),
                                          glm::value_ptr(scene.getSelectedEntity()->getTransformation().projection),
                                          m_gizmoOperation, ImGuizmo::LOCAL,
                                          glm::value_ptr(scene.getSelectedEntity()->getTransformation().model));
                 }
             }
-            ImGui::End();
 
-            ImGui::Render();
             lastViewportSize = {getViewportWidth(), getViewportHeight()};
+            ImGui::End();
         }
 
         void ImGUI::endFrame(WindowingService &service) {
+            if (Input::isKeyPressed(Key::ESCAPE)) {
+                Video::m_editorMode = true;
+                Video::getWindowingService()->setViewport(getViewportWidth(), getViewportHeight());
+            }
+            ImGui::Render();
             ImGuiIO &io = ImGui::GetIO();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
             if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
@@ -160,6 +173,9 @@ namespace r8ge {
 
         //TODO Optimize that we will remember last selected entity instead of deselectAllEntities();
         void ImGUI::insertSceneIntoSceneItems(Scene &scene) {
+            if (Video::m_editorMode == false) {
+                return;
+            }
             unsigned long currentSelectedEntityID = -1;
 
             if (ImGui::Begin("SceneItems", nullptr, windowFlags)) {
@@ -195,8 +211,7 @@ namespace r8ge {
         float ImGUI::getViewportWidth() {
             if (ImGuiWindow *viewportWindow = ImGui::FindWindowByName("Viewport")) {
                 return viewportWindow->Size.x;
-            }
-            else {
+            } else {
                 R8GE_LOG_ERROR("Viewport window not found");
                 return 0.0f;
             }
@@ -205,8 +220,25 @@ namespace r8ge {
         float ImGUI::getViewportHeight() {
             if (ImGuiWindow *viewportWindow = ImGui::FindWindowByName("Viewport")) {
                 return viewportWindow->Size.y;
+            } else {
+                R8GE_LOG_ERROR("Viewport window not found");
+                return 0.0f;
             }
-            else {
+        }
+
+        float ImGUI::getViewportPosX() {
+            if (ImGuiWindow *viewportWindow = ImGui::FindWindowByName("Viewport")) {
+                return viewportWindow->Pos.x;
+            } else {
+                R8GE_LOG_ERROR("Viewport window not found");
+                return 0.0f;
+            }
+        }
+
+        float ImGUI::getViewportPosY() {
+            if (ImGuiWindow *viewportWindow = ImGui::FindWindowByName("Viewport")) {
+                return viewportWindow->Pos.y;
+            } else {
                 R8GE_LOG_ERROR("Viewport window not found");
                 return 0.0f;
             }

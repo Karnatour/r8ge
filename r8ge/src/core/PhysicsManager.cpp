@@ -41,8 +41,7 @@ namespace r8ge {
 
     void PhysicsManager::addBody(video::Entity *entity) {
         if (entity->getBodyCreationSettings().GetShape() == nullptr) {
-            R8GE_LOG_ERROR("Entity {} with ID: {} has no body creation settings", entity->getName(),
-                           entity->getEntityID());
+            //R8GE_LOG_ERROR("Entity {} with ID: {} has no body creation settings", entity->getName(),entity->getEntityID());
             return;
         }
 

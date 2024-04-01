@@ -17,7 +17,7 @@ namespace r8ge {
             Video::getRenderingService()->compileProgram(m_shader);
             m_transformation.model = glm::mat4(1.0f);
             m_transformation.projection = glm::perspective(glm::radians(45.0f),
-                                                           Video::getGUIService()->getViewportWidth()/
+                                                           Video::getGUIService()->getViewportWidth() /
                                                            Video::getGUIService()->getViewportHeight(),
                                                            0.1f, 100.0f);
             m_transformation.model = glm::translate(m_transformation.model, glm::vec3(0.0f, 0.0f, 0.0f));
@@ -84,10 +84,12 @@ namespace r8ge {
 
         EntityCube::EntityCube(Scene &scene, Mesh cubeMesh) : Entity(scene), m_cubeMesh(std::move(cubeMesh)) {
             m_name = m_cubeMesh.getName();
+            /*
             m_bodyCreationSettings = JPH::BodyCreationSettings(new JPH::BoxShape(JPH::Vec3(1.0f, 1.0f, 1.0f)),
                                                                JPH::RVec3(0, 0, 0),
                                                                JPH::Quat::sIdentity(), JPH::EMotionType::Dynamic,
                                                                ObjectLayers::MOVING);
+                                                               */
         }
 
         void EntityCube::render() {
@@ -95,10 +97,17 @@ namespace r8ge {
                 m_updateFunction();
             }
             m_transformation.view = m_scene.getCamera().getViewMatrix();
-            m_transformation.projection = glm::perspective(glm::radians(45.0f),
-                                                           Video::getGUIService()->getViewportWidth()/
-                                                           Video::getGUIService()->getViewportHeight(),
-                                                           0.1f, 100.0f);
+            if (Video::m_editorMode) {
+                m_transformation.projection = glm::perspective(glm::radians(45.0f),
+                                                               Video::getGUIService()->getViewportWidth() /
+                                                               Video::getGUIService()->getViewportHeight(),
+                                                               0.1f, 100.0f);
+            } else {
+                m_transformation.projection = glm::perspective(glm::radians(45.0f),
+                                                               Video::getWindowingService()->getWindowWidth() /
+                                                               Video::getWindowingService()->getWindowHeight(),
+                                                               0.1f, 100.0f);
+            }
             m_cubeMesh.render(m_shader, m_transformation);
         }
 

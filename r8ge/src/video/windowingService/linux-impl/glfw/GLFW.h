@@ -16,7 +16,7 @@ namespace r8ge {
 
             void exit() override;
 
-            bool createMainWindow(size_t width, size_t height, std::string title) override;
+            bool createMainWindow(int width, int height, std::string title) override;
 
             void poolEvents() override;
 
@@ -36,9 +36,9 @@ namespace r8ge {
 
             void setViewport(int width, int height) override;
 
-            float getWidth() override;
+            float getWindowWidth() override;
 
-            float getHeight() override;
+            float getWindowHeight() override;
 
             void setVsync(bool state) override;
 
@@ -51,11 +51,11 @@ namespace r8ge {
             void setFrameBuffer(r8ge::video::GLFrameBuffer& frameBuffer) override;
 
         private:
-            int m_mainWindowWidth, m_mainWindowHeight;
+            int m_mainWindowWidth = 600, m_mainWindowHeight = 400;
             std::string m_mainWindowTitle;
             bool m_Vsync = false;
             GLFWwindow *m_mainWindow = nullptr;
-            r8ge::video::GLFrameBuffer* m_frameBuffer = nullptr;
+            GLFrameBuffer* m_frameBuffer = nullptr;
             ResizeCallback m_resizeCallback;
             float m_lastX = 0,m_lastY = 0;
             bool m_firstMouse = true;

@@ -105,7 +105,7 @@ namespace r8ge {
                     delete it->second;
                     it = m_entities.erase(it);
                     continue;
-                }
+                    }
                 it->second->render();
                 ++it;
             }
@@ -113,12 +113,20 @@ namespace r8ge {
             m_shaderLibrary.useShader("Skybox.glsl");
             Video::getRenderingService()->setUniformInt(m_shaderLibrary.getShader("Skybox.glsl"), "skybox", 0);
             m_skyboxTransformationRef.view = glm::mat4(glm::mat3(m_camera.getViewMatrix()));
-            m_skyboxTransformationRef.projection = glm::perspective(glm::radians(45.0f),
-                                                                 Video::getGUIService()->getViewportWidth() /
-                                                                 Video::getGUIService()->getViewportHeight(),
-                                                                 0.1f, 100.0f);
-            m_skyBox.render(m_shaderLibrary.getShader("Skybox.glsl"));
+            if (Video::m_editorMode) {
+                m_skyboxTransformationRef.projection = glm::perspective(glm::radians(45.0f),
+                                                                         Video::getGUIService()->getViewportWidth() /
+                                                                         Video::getGUIService()->getViewportHeight(),
+                                                                         0.1f, 100.0f);
+            } else {
+                m_skyboxTransformationRef.projection = glm::perspective(glm::radians(45.0f),
+                                                                     Video::getWindowingService()->getWindowWidth() /
+                                                                     Video::getWindowingService()->getWindowHeight(),
+                                                                     0.1f, 100.0f);
 
+
+            }
+            m_skyBox.render(m_shaderLibrary.getShader("Skybox.glsl"));
         }
 
 

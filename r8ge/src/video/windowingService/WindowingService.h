@@ -26,7 +26,7 @@ namespace r8ge {
 
             virtual void exit() = 0;
 
-            virtual bool createMainWindow(size_t width, size_t height, std::string title) = 0;
+            virtual bool createMainWindow(int width, int height, std::string title) = 0;
 
             virtual bool destroyMainWindow() = 0;
 
@@ -46,9 +46,9 @@ namespace r8ge {
 
             virtual void poolEvents() = 0;
 
-            virtual float getWidth() = 0;
+            virtual float getWindowWidth() = 0;
 
-            virtual float getHeight() = 0;
+            virtual float getWindowHeight() = 0;
 
             virtual void setVsync(bool state) = 0;
 

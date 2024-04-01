@@ -40,7 +40,7 @@ namespace r8ge {
             R8GE_LOG("GLFW windowing service released");
         }
 
-        bool GLFW::createMainWindow(size_t width, size_t height, std::string title) {
+        bool GLFW::createMainWindow(int width, int height, std::string title) {
             R8GE_LOG("GLFW Window is being creating `{}`", title);
 
             m_mainWindow = glfwCreateWindow(
@@ -75,10 +75,10 @@ namespace r8ge {
             }
             glfwSetWindowUserPointer(m_mainWindow, this);
 
-            if (Video::m_editorMode == false){
-            setResizeCallback([](float width, float height, r8ge::video::GLFrameBuffer &buffer) {
-                buffer.rescaleFrameBuffer(width, height);
-            });
+            if (Video::m_editorMode == false) {
+                setResizeCallback([](float width, float height, r8ge::video::GLFrameBuffer &buffer) {
+                    buffer.rescaleFrameBuffer(width, height);
+                });
             }
 
             glfwSetKeyCallback(m_mainWindow, [](GLFWwindow *window, int key, int scancode, int action, int mods) {
@@ -90,11 +90,11 @@ namespace r8ge {
                     switch (action) {
                         case GLFW_PRESS:
                             instance->m_keyActionCallback(code, IOAction::PRESS);
-                            //R8GE_LOG("Pressed key {}", to_string(code));
+                        //R8GE_LOG("Pressed key {}", to_string(code));
                             break;
                         case GLFW_RELEASE:
                             instance->m_keyActionCallback(code, IOAction::RELEASE);
-                            //R8GE_LOG("Released key {}", to_string(code));
+                        //R8GE_LOG("Released key {}", to_string(code));
                             break;
                         /* TODO Add Repeat ??
                     case GLFW_REPEAT:
@@ -208,8 +208,8 @@ namespace r8ge {
                 instance->m_mainWindowWidth = width;
                 instance->m_mainWindowHeight = height;
 
-                if (Video::m_editorMode==false){
-                glViewport(0, 0, width, height);
+                if (Video::m_editorMode == false) {
+                    glViewport(0, 0, width, height);
                 }
                 if (instance->m_resizeCallback) {
                     instance->m_resizeCallback(width, height, *instance->m_frameBuffer);
@@ -244,11 +244,11 @@ namespace r8ge {
             glViewport(0, 0, width, height);
         }
 
-        float GLFW::getWidth() {
+        float GLFW::getWindowWidth() {
             return m_mainWindowWidth;
         }
 
-        float GLFW::getHeight() {
+        float GLFW::getWindowHeight() {
             return m_mainWindowHeight;
         }
 

@@ -26,7 +26,7 @@ namespace r8ge {
 
             void beginFrame() override;
 
-            void render(r8ge::video::GLFrameBuffer &frameBuffer, Scene &scene) override;
+            void renderEditorUI(r8ge::video::GLFrameBuffer &frameBuffer, Scene &scene) override;
 
             void endFrame(WindowingService &service) override;
 
@@ -36,6 +36,10 @@ namespace r8ge {
 
             float getViewportHeight() override;
 
+            float getViewportPosX() override;
+
+            float getViewportPosY() override;
+
             void renderR8GELayout();
 
             void setColors();
@@ -44,7 +48,7 @@ namespace r8ge {
 
         private:
             ImGuiWindowFlags windowFlags = 0;
-            GLTexture m_cubeButtonTex;
+            GLTexture m_cubeButtonTex,m_playButtonTex;
             ImGuizmo::OPERATION m_gizmoOperation = ImGuizmo::TRANSLATE;
             std::pair<float,float> lastViewportSize = {0.0f,0.0f};
         };

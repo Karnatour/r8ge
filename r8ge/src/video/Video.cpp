@@ -21,7 +21,6 @@ namespace r8ge {
     PhysicsManager physicsManager;
 
     Video::Video() : m_title("R8GE-video Engine") {
-
         s_renderingService = video::RenderingService::create(video::RenderingService::API::OpenGL);
         s_windowingService = video::WindowingService::create();
         s_guiService = video::GUIService::create();
@@ -56,9 +55,9 @@ namespace r8ge {
         glEnable(GL_DEPTH_TEST);
         R8GE_LOG("Video starting to run main loop");
         s_windowingService->setFrameBuffer(frameBuffer);
-        video::Texture2D tex("Engine/Textures/tex.jpg",true);
+        video::Texture2D tex("Engine/Textures/tex.jpg", true);
         s_guiService->beginFrame();
-        s_guiService->render(frameBuffer,scene);
+        s_guiService->renderEditorUI(frameBuffer, scene);
         s_guiService->endFrame(*s_windowingService);
         frameBuffer.setBuffer(s_guiService->getViewportWidth(), s_guiService->getViewportHeight());
         while (Ar8ge::isRunning()) {
@@ -66,9 +65,11 @@ namespace r8ge {
             s_timestep->setTime(time - m_lastFrameRenderTime);
             m_lastFrameRenderTime = time;
 
-            s_guiService->beginFrame();
 
-            frameBuffer.bind();
+            s_guiService->beginFrame();
+            if (m_editorMode) {
+                frameBuffer.bind();
+            }
 
             scene.changeCamera(s_timestep->getSeconds());
             s_renderingService->setClearColor(ColorRGBA(0, 0, 30, 255));
@@ -76,25 +77,22 @@ namespace r8ge {
             scene.render(physicsManager);
             physicsManager.update();
 
-            s_guiService->insertSceneIntoSceneItems(scene);
+            if (m_editorMode) {
+                s_guiService->insertSceneIntoSceneItems(scene);
+                frameBuffer.unbind();
+                s_guiService->renderEditorUI(frameBuffer, scene);
+            }
 
-            frameBuffer.unbind();
-
-            s_guiService->render(frameBuffer,scene);
             s_guiService->endFrame(*s_windowingService);
+
 
             s_windowingService->swapBuffersOfMainWindow();
             s_windowingService->poolEvents();
-            if (r8ge::Input::isKeyPressed(Key::O)){
-            m_editorMode = false;
-            }
             m_firstFrameLoop = false;
         }
-
     }
 
     void Video::exit() {
-
         s_windowingService->destroyMainWindow();
 
         s_windowingService->exit();
@@ -116,7 +114,7 @@ namespace r8ge {
         return s_guiService;
     }
 
-    std::shared_ptr<TimeStep> Video::getTimeStep(){
+    std::shared_ptr<TimeStep> Video::getTimeStep() {
         return s_timestep;
     }
 }
