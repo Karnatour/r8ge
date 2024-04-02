@@ -16,6 +16,7 @@
 #include "../../../../core/Input.h"
 #include "../../../../core/PhysicsManager.h"
 #include "../../../../core/events/KeyEvents.h"
+#include "../../../../core/Ar8ge.h"
 
 namespace r8ge {
     namespace video {
@@ -94,7 +95,8 @@ namespace r8ge {
                 if (ImGui::BeginMenuBar()) {
                     if (ImGui::BeginMenu("File")) {
                         if (ImGui::MenuItem("Exit")) {
-
+                            R8GE_LOG_DEBUG("Exit button pressed, exiting");
+                            r8ge::Ar8ge::killEngine();
                         }
                         ImGui::EndMenu();
                     }
@@ -218,6 +220,7 @@ namespace r8ge {
             unsigned long currentSelectedEntityID = -1;
 
             if (ImGui::Begin("SceneItems", nullptr, windowFlags)) {
+                ImGui::PushFont(normalFont);
                 if (ImGui::TreeNode(scene.getName().c_str())) {
                     for (auto &entityPair: scene.getEntitiesMap()) {
                         ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_SpanAvailWidth;
@@ -240,6 +243,7 @@ namespace r8ge {
                     }
                     ImGui::TreePop();
                 }
+                ImGui::PopFont();
             }
             if (currentSelectedEntityID != -1) {
                 scene.handleTreeNodeSelect(currentSelectedEntityID);

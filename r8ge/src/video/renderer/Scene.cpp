@@ -43,7 +43,7 @@ namespace r8ge {
         }
 
         void Scene::handleTreeNodeSelect(unsigned long nodeIndex) {
-            if (nodeIndex > 0 && nodeIndex < m_entities.size()) {
+            if (nodeIndex < m_entities.size()) {
                 m_selectedEntityPtr = m_entities[nodeIndex];
             } else {
                 m_selectedEntityPtr = nullptr;

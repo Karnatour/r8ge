@@ -16,7 +16,7 @@ namespace r8ge {
 
     void GameInstance::directEvent(const std::shared_ptr<Event> &event) {
         if(Input::isKeyPressed(Key::ESCAPE, Modifier::SHIFT)) {
-            R8GE_LOG_DEBUG("Escape pressed, exiting");
+            R8GE_LOG_DEBUG("Shift + Escape pressed, exiting");
             r8ge::Ar8ge::killEngine();
         }
     }
