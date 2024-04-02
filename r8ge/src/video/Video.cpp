@@ -60,13 +60,15 @@ namespace r8ge {
         s_guiService->renderEditorUI(frameBuffer, scene);
         s_guiService->endFrame(*s_windowingService);
         frameBuffer.setBuffer(s_guiService->getViewportWidth(), s_guiService->getViewportHeight());
+
         while (Ar8ge::isRunning()) {
+
             double time = glfwGetTime();
             s_timestep->setTime(time - m_lastFrameRenderTime);
             m_lastFrameRenderTime = time;
 
-
             s_guiService->beginFrame();
+            //s_guiService->showDemoWindow();
             if (m_editorMode) {
                 frameBuffer.bind();
             }
@@ -84,7 +86,6 @@ namespace r8ge {
             }
 
             s_guiService->endFrame(*s_windowingService);
-
 
             s_windowingService->swapBuffersOfMainWindow();
             s_windowingService->poolEvents();

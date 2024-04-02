@@ -51,6 +51,7 @@ namespace r8ge {
             GLTexture m_cubeButtonTex,m_playButtonTex;
             ImGuizmo::OPERATION m_gizmoOperation = ImGuizmo::TRANSLATE;
             std::pair<float,float> lastViewportSize = {0.0f,0.0f};
+            ImFont *smallFont = nullptr,*normalFont = nullptr,*bigFont = nullptr;
         };
     } // r8ge
 } // video
