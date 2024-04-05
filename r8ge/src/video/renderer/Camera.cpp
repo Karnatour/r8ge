@@ -54,10 +54,10 @@ namespace r8ge {
 
                 temp = r8ge::Input::getScrollPos();
                 if (temp.second == 1 && m_MovementSpeed <= m_maxMovementSpeed) {
-                    m_MovementSpeed += 1.0f;
+                    m_MovementSpeed += 5.0f;
                 }
                 else if (temp.second == -1 && m_MovementSpeed >= m_minMovementSpeed) {
-                    m_MovementSpeed -= 1.0f;
+                    m_MovementSpeed -= 5.0f;
                 }
 
                 m_Yaw += mouseMoveX;

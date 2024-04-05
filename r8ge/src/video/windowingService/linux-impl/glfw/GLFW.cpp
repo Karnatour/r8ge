@@ -7,7 +7,7 @@
 #include "../../../../core/Ar8ge.h"
 #include "../../../../core/events/MouseEvents.h"
 #include "../../../../core/events/WindowEvents.h"
-
+#include <nfd.h>
 #include <utility>
 
 namespace r8ge {
@@ -31,6 +31,8 @@ namespace r8ge {
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
             glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
             glfwWindowHint(GLFW_DOUBLEBUFFER, true);
+
+            NFD_Init();
         }
 
 

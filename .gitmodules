@@ -23,3 +23,6 @@
 [submodule "r8ge/vendor/glew-cmake"]
 	path = r8ge/vendor/glew-cmake
 	url = https://github.com/Perlmint/glew-cmake
+[submodule "r8ge/vendor/nativefiledialog-extended"]
+	path = r8ge/vendor/nativefiledialog-extended
+	url = https://github.com/btzy/nativefiledialog-extended

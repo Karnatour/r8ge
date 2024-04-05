@@ -40,6 +40,8 @@ namespace r8ge {
 
             [[nodiscard]] bool getTextureState() const;
 
+            bool& isTextureFlippedRef();
+
             [[nodiscard]] bool getSelectionState() const;
 
             void setSelectionState(bool state);
@@ -47,6 +49,8 @@ namespace r8ge {
             JPH::BodyCreationSettings getBodyCreationSettings();
 
             std::string getName();
+
+            std::string getTexturePath();
 
             Transformation &getTransformation();
 
@@ -57,6 +61,7 @@ namespace r8ge {
             unsigned long m_id;
             bool m_hasMaterial = false;
             bool m_hasTexture = false;
+            bool m_flipTexture = false;
             bool m_isSelected = false;
             UpdateFunction m_updateFunction{};
             Program m_shader = Program("Engine/Shaders/EntityDefault.glsl");
@@ -64,7 +69,7 @@ namespace r8ge {
             Material m_material{};
             Transformation m_transformation;
             Scene &m_scene;
-            std::string m_name;
+            std::string m_name,m_texturePath;
             JPH::BodyCreationSettings m_bodyCreationSettings;
         };
 

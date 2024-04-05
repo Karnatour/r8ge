@@ -71,6 +71,7 @@ namespace r8ge {
                 for (const auto &file: std::filesystem::directory_iterator("Engine/Shaders")) {
                     m_shaderLibrary.addShader(file.path().string());
                 }
+                R8GE_LOG_INFOR("Engine shaders loaded");
             }
             m_shaderLibrary.compileAllShaders();
             m_skyBox = SkyBox(skyboxVertices, skyboxIndices, skyboxLocations, "skybox");

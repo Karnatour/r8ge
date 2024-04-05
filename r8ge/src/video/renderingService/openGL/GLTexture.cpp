@@ -35,7 +35,7 @@ namespace r8ge {
                 }
             };
 
-            glTextureParameteri(m_texture, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTextureParameteri(m_texture, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
             glTextureParameteri(m_texture, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
             glTextureParameteri(m_texture, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -77,7 +77,7 @@ namespace r8ge {
                 }
             };
 
-            glTextureParameteri(m_texture, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTextureParameteri(m_texture, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
             glTextureParameteri(m_texture, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
             glTextureParameteri(m_texture, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -98,8 +98,14 @@ namespace r8ge {
             glBindTextureUnit(unit, m_texture);
         }
 
+
+
         uint32_t GLTexture::getTexture() const {
             return m_texture;
+        }
+
+        void GLTexture::unbindTexture() {
+            glBindTextureUnit(0, 0);
         }
 
         GLTexture::~GLTexture() = default;

@@ -2,8 +2,7 @@
 // Created by karnatour on 9.1.24.
 //
 
-#ifndef R8GE_TEXTURE_H
-#define R8GE_TEXTURE_H
+#pragma once
 
 namespace r8ge{
     enum ImageFormat{
@@ -15,7 +14,10 @@ namespace r8ge{
         RGB,
         RGBA
     };
+    extern const char* textureTypesStrings[];
+    constexpr int TEXTURE_TYPES_STRINGS_COUNT = 4;
+    //TexTs - TextureTypeString
+    std::string convertTexTsToMeshTexTs(const std::string& textureTypeString);
 
 }
 
-#endif //R8GE_TEXTURE_H

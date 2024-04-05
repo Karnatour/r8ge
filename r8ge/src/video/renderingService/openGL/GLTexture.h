@@ -22,6 +22,8 @@ namespace r8ge {
 
             void bindTexture(unsigned int unit) const;
 
+            static void unbindTexture();
+
         private:
             uint32_t m_texture{};
         };

@@ -19,7 +19,7 @@ namespace r8ge {
             m_transformation.projection = glm::perspective(glm::radians(45.0f),
                                                            Video::getGUIService()->getViewportWidth() /
                                                            Video::getGUIService()->getViewportHeight(),
-                                                           0.1f, 100.0f);
+                                                           0.1f, 1000.0f);
             m_transformation.model = glm::translate(m_transformation.model, glm::vec3(0.0f, 0.0f, 0.0f));
             m_transformation.model = glm::scale(m_transformation.model, glm::vec3(1.0f, 1.0f, 1.0f));
         }
@@ -70,6 +70,14 @@ namespace r8ge {
             return m_bodyCreationSettings;
         }
 
+        std::string Entity::getTexturePath() {
+            return m_texturePath;
+        }
+
+        bool &Entity::isTextureFlippedRef() {
+            return m_flipTexture;
+        }
+
         void EntityModel::render() {
             if (m_updateFunction != nullptr) {
                 m_updateFunction();
@@ -101,12 +109,12 @@ namespace r8ge {
                 m_transformation.projection = glm::perspective(glm::radians(45.0f),
                                                                Video::getGUIService()->getViewportWidth() /
                                                                Video::getGUIService()->getViewportHeight(),
-                                                               0.1f, 100.0f);
+                                                               0.1f, 1000.0f);
             } else {
                 m_transformation.projection = glm::perspective(glm::radians(45.0f),
                                                                Video::getWindowingService()->getWindowWidth() /
                                                                Video::getWindowingService()->getWindowHeight(),
-                                                               0.1f, 100.0f);
+                                                               0.1f, 1000.0f);
             }
             m_cubeMesh.render(m_shader, m_transformation);
         }
@@ -114,6 +122,7 @@ namespace r8ge {
 
         void EntityCube::changeTexture(const Texture2D &texture) {
             m_texture.setData(texture);
+            m_texture.setType(texture.getType());
             m_cubeMesh.setTexture(std::vector<GLTexture>{m_texture});
             m_hasTexture = true;
         }

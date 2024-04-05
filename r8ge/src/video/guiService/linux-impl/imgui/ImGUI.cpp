@@ -7,7 +7,7 @@
 #include <ImGuizmo.h>
 #include "../../../renderer/Entity.h"
 #include <glm/gtc/type_ptr.hpp>
-
+#include <nfd.h>
 
 #include <backends/imgui_impl_opengl3.h>
 #include <backends/imgui_impl_glfw.h>
@@ -17,6 +17,8 @@
 #include "../../../../core/PhysicsManager.h"
 #include "../../../../core/events/KeyEvents.h"
 #include "../../../../core/Ar8ge.h"
+#include "../../../../core/Utils.h"
+#include "../../../types/Texture.h"
 
 namespace r8ge {
     namespace video {
@@ -91,7 +93,7 @@ namespace r8ge {
             window_class.DockNodeFlagsOverrideSet = ImGuiDockNodeFlags_NoTabBar;
 
             ImGui::SetNextWindowClass(&window_class);
-            if (ImGui::Begin("MenuBar", nullptr, windowFlags | ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDecoration)){
+            if (ImGui::Begin("MenuBar", nullptr, windowFlags | ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDecoration)) {
                 if (ImGui::BeginMenuBar()) {
                     if (ImGui::BeginMenu("File")) {
                         if (ImGui::MenuItem("Exit")) {
@@ -108,18 +110,50 @@ namespace r8ge {
             if (ImGui::Begin("Parameters", nullptr, windowFlags)) {
                 ImGui::PushFont(normalFont);
                 if (scene.getSelectedEntity() != nullptr) {
+                    Entity &selectedEntity = *scene.getSelectedEntity();
+                    static int currentTextureComboIndexl = 0;
+                    const char *previewTextureTypes = textureTypesStrings[currentTextureComboIndexl];
                     if (ImGui::TreeNode("Transformation")) {
                         float position[3], rotation[3], scale[3];
-                        ImGuizmo::DecomposeMatrixToComponents(
-                            glm::value_ptr(scene.getSelectedEntity()->getTransformation().model), position, rotation,
-                            scale);
+                        ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(selectedEntity.getTransformation().model), position, rotation, scale);
                         ImGui::DragFloat3("Position", position, 0.1f);
                         ImGui::DragFloat3("Rotation", rotation, 1.0f);
                         ImGui::DragFloat3("Scale", scale, 0.1f);
-                        ImGuizmo::RecomposeMatrixFromComponents(position, rotation, scale,
-                                                                glm::value_ptr(
-                                                                    scene.getSelectedEntity()->getTransformation().
-                                                                    model));
+                        ImGuizmo::RecomposeMatrixFromComponents(position, rotation, scale, glm::value_ptr(selectedEntity.getTransformation().model));
+                        ImGui::TreePop();
+                    }
+                    if (ImGui::TreeNode("Texture")) {
+                        if (ImGui::Button("Change Texture")) {
+                            nfdchar_t *path = nullptr;
+                            nfdfilteritem_t filterItem[1] = {{"Image", "png,jpg,jpeg"}};
+                            nfdresult_t nfdresult = NFD_OpenDialog(&path, filterItem, 1, (getExecutableDirectory() + "/Engine/Textures").c_str());
+                            if (nfdresult == NFD_OKAY) {
+                                Texture2D tempTexture = Texture2D(path, true);
+                                tempTexture.setType(convertTexTsToMeshTexTs(textureTypesStrings[currentTextureComboIndexl]));
+                                scene.changeTexture(tempTexture);
+                            } else if (nfdresult == NFD_CANCEL) {
+                                R8GE_LOG_TRACE("Texture selection user clicked cancel");
+                            } else {
+                                R8GE_LOG_ERROR("NFD Error: %s", NFD_GetError());
+                            }
+                        }
+
+                        if (ImGui::Checkbox("Flip Texture", &selectedEntity.isTextureFlippedRef())) {
+
+                        }
+                        ImGui::SameLine();
+                        if (ImGui::BeginCombo("Texture type", previewTextureTypes, ImGuiComboFlags_HeightSmall | ImGuiComboFlags_WidthFitPreview)) {
+                            for (int n = 0; n < TEXTURE_TYPES_STRINGS_COUNT; n++) {
+                                bool is_selected = (currentTextureComboIndexl == n);
+                                if (ImGui::Selectable(textureTypesStrings[n], is_selected)) {
+                                    currentTextureComboIndexl = n;
+                                }
+                                if (is_selected) {
+                                    ImGui::SetItemDefaultFocus();
+                                }
+                            }
+                            ImGui::EndCombo();
+                        }
                         ImGui::TreePop();
                     }
                 }
@@ -142,8 +176,8 @@ namespace r8ge {
                 if (ImGui::ImageButton(reinterpret_cast<ImTextureID>(m_playButtonTex.getTexture()), ImVec2(32, 32))) {
                     Video::m_editorMode = false;
                     Video::getWindowingService()->setViewport(
-                        static_cast<int>(Video::getWindowingService()->getWindowWidth()),
-                        static_cast<int>(Video::getWindowingService()->getWindowHeight()));
+                            static_cast<int>(Video::getWindowingService()->getWindowWidth()),
+                            static_cast<int>(Video::getWindowingService()->getWindowHeight()));
                 }
             }
             ImGui::End();
@@ -152,16 +186,15 @@ namespace r8ge {
             if (ImGui::Begin("Viewport", nullptr, ImGuiWindowFlags_NoMove)) {
                 {
                     if (lastViewportSize.first != getViewportWidth() || lastViewportSize.second !=
-                        getViewportHeight()) {
+                                                                        getViewportHeight()) {
                         frameBuffer.rescaleFrameBuffer(getViewportWidth(), getViewportHeight());
-                        Video::getWindowingService()->setViewport(static_cast<int>(getViewportWidth()),
-                                                                  static_cast<int>(getViewportHeight()));
+                        Video::getWindowingService()->setViewport(static_cast<int>(getViewportWidth()), static_cast<int>(getViewportHeight()));
                     }
                     ImGui::Image(
-                        reinterpret_cast<ImTextureID>(frameBuffer.getFrameTexture()),
-                        ImGui::GetContentRegionAvail(),
-                        ImVec2(0, 1),
-                        ImVec2(1, 0)
+                            reinterpret_cast<ImTextureID>(frameBuffer.getFrameTexture()),
+                            ImGui::GetContentRegionAvail(),
+                            ImVec2(0, 1),
+                            ImVec2(1, 0)
                     );
 
                     if (scene.getSelectedEntity() != nullptr) {
@@ -192,8 +225,7 @@ namespace r8ge {
         void ImGUI::endFrame(WindowingService &service) {
             if (Input::isKeyPressed(Key::ESCAPE)) {
                 Video::m_editorMode = true;
-                Video::getWindowingService()->setViewport(static_cast<int>(getViewportWidth()),
-                                                          static_cast<int>(getViewportHeight()));
+                Video::getWindowingService()->setViewport(static_cast<int>(getViewportWidth()), static_cast<int>(getViewportHeight()));
             }
             ImGui::Render();
             ImGuiIO &io = ImGui::GetIO();
@@ -230,8 +262,8 @@ namespace r8ge {
                         }
                         flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_Bullet;
                         if (ImGui::TreeNodeEx(
-                            reinterpret_cast<void *>(static_cast<intptr_t>(entityPair.second->getEntityID())), flags,
-                            "%s", entityPair.second->getName().c_str())) {
+                                reinterpret_cast<void *>(static_cast<intptr_t>(entityPair.second->getEntityID())), flags, "%s",
+                                entityPair.second->getName().c_str())) {
                             if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen()) {
                                 currentSelectedEntityID = entityPair.first;
                                 R8GE_LOG_DEBUG("EntityWasSelected entity selected : {}", entityPair.first);
@@ -301,20 +333,14 @@ namespace r8ge {
                 ImGui::DockBuilderSetNodeSize(id, size);
 
                 ImGuiID viewportDock = ImGui::DockBuilderSplitNode(id, ImGuiDir_Up, 1.0f, nullptr, &id);
-                ImGuiID menuBarDock = ImGui::DockBuilderSplitNode(viewportDock, ImGuiDir_Up, 0.05f, nullptr,
-                                                                    &viewportDock);
-                ImGui::DockBuilderSetNodeSize(menuBarDock, ImVec2(1.0f,25.0f));
-                ImGuiID sceneItemsDock = ImGui::DockBuilderSplitNode(viewportDock, ImGuiDir_Left, 0.25f, nullptr,
-                                                                     &viewportDock);
-                ImGuiID parametersDock = ImGui::DockBuilderSplitNode(viewportDock, ImGuiDir_Right, 0.15f, nullptr,
-                                                                     &viewportDock);
-                ImGui::DockBuilderSetNodeSize(parametersDock, ImVec2(500.0f,1.0f));
-                ImGuiID builderDock = ImGui::DockBuilderSplitNode(parametersDock, ImGuiDir_Up, 0.15f, nullptr,
-                                                                  &parametersDock);
-                ImGuiID playBarDock = ImGui::DockBuilderSplitNode(viewportDock, ImGuiDir_Up, 0.05f, nullptr,
-                                                                  &viewportDock);
-                ImGui::DockBuilderSetNodeSize(playBarDock, ImVec2(1.0f,55.0f));
-
+                ImGuiID menuBarDock = ImGui::DockBuilderSplitNode(viewportDock, ImGuiDir_Up, 0.05f, nullptr, &viewportDock);
+                ImGui::DockBuilderSetNodeSize(menuBarDock, ImVec2(1.0f, 25.0f));
+                ImGuiID sceneItemsDock = ImGui::DockBuilderSplitNode(viewportDock, ImGuiDir_Left, 0.25f, nullptr, &viewportDock);
+                ImGuiID parametersDock = ImGui::DockBuilderSplitNode(viewportDock, ImGuiDir_Right, 0.15f, nullptr, &viewportDock);
+                ImGui::DockBuilderSetNodeSize(parametersDock, ImVec2(500.0f, 1.0f));
+                ImGuiID builderDock = ImGui::DockBuilderSplitNode(parametersDock, ImGuiDir_Up, 0.15f, nullptr, &parametersDock);
+                ImGuiID playBarDock = ImGui::DockBuilderSplitNode(viewportDock, ImGuiDir_Up, 0.05f, nullptr, &viewportDock);
+                ImGui::DockBuilderSetNodeSize(playBarDock, ImVec2(1.0f, 55.0f));
 
 
                 ImGui::DockBuilderDockWindow("Viewport", viewportDock);
@@ -355,6 +381,9 @@ namespace r8ge {
             colors[ImGuiCol_TabActive] = ImVec4{157.0f / 255.0f, 160.0f / 255.0f, 170.0f / 255.0f, 1.0f};
             colors[ImGuiCol_TabUnfocused] = ImVec4{9.0f / 255.0f, 17.0f / 255.0f, 43.0f / 255.0f, 1.0f};
             colors[ImGuiCol_TabUnfocusedActive] = ImVec4{58.0f / 255.0f, 65.0f / 255.0f, 85.0f / 255.0f, 1.0f};
+
+            colors[ImGuiCol_MenuBarBg] = ImVec4{9.0f / 255.0f, 17.0f / 255.0f, 43.0f / 255.0f, 1.00f};
+            colors[ImGuiCol_ScrollbarBg] = ImVec4{9.0f / 255.0f, 17.0f / 255.0f, 43.0f / 255.0f, 1.00f};
         }
     } // r8ge
 } // video

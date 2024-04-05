@@ -31,20 +31,26 @@ namespace r8ge {
                 for (unsigned int i = 0; i < m_textures.size(); ++i) {
                     std::string type = m_textures[i].getType();
                     std::string number;
-                    if (type == "texture_diffuse")
+                    if (type == "texture_diffuse") {
                         number = std::to_string(diffuseNr++);
-                    else if (type == "texture_specular")
+                    }
+                    else if (type == "texture_specular") {
                         number = std::to_string(specularNr++);
-                    else if (type == "texture_normal")
+                    }
+                    else if (type == "texture_normal") {
                         number = std::to_string(normalNr++);
-                    else if (type == "texture_height")
+                    }
+                    else if (type == "texture_height") {
                         number = std::to_string(heightNr++);
-
+                    }
                     m_renderingService->setUniformInt(shader, type + number, static_cast<int>(i));
                     m_textures[i].bindTexture(i);
                 }
             }
             m_renderingService->render(m_indices.size());
+            if (!m_textures.empty()){
+                GLTexture::unbindTexture();
+            }
         }
 
         void Mesh::setTexture(const std::vector<GLTexture> &textures) {

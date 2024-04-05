@@ -24,7 +24,7 @@ namespace r8ge
             float m_Yaw, m_Pitch, m_MovementSpeed, m_MouseSensitivity, m_Zoom = 45.0f;
             bool m_bInputModeOn = false;
             double m_lastX = 0,m_lastY = 0;
-            float m_minMovementSpeed = 1.0f, m_maxMovementSpeed = 50.0f;
+            float m_minMovementSpeed = 5.0f, m_maxMovementSpeed = 150.0f;
         };
 
     } // r8ge

@@ -122,6 +122,9 @@ add_library(r8ge STATIC
         src/video/renderer/SkyBox.h
         src/video/renderingService/programManager/ShaderLibrary.cpp
         src/video/renderingService/programManager/ShaderLibrary.h
+        src/core/Utils.cpp
+        src/core/Utils.h
+        src/video/types/Texture.cpp
 )
 
 # Specify the precompiled header
@@ -149,6 +152,10 @@ target_link_libraries(r8ge PRIVATE glfw)
 add_subdirectory(vendor/glew-cmake)
 target_include_directories(r8ge PUBLIC vendor/glew-cmake/include)
 target_link_libraries(r8ge PRIVATE libglew_static)
+
+add_subdirectory(vendor/nativefiledialog-extended)
+target_include_directories(r8ge PUBLIC vendor/nativefiledialog-extended/src/include)
+target_link_libraries(r8ge PRIVATE nfd)
 
 target_include_directories(r8ge PUBLIC vendor/glm)
 
@@ -209,8 +216,6 @@ FetchContent_Declare(
 		SOURCE_SUBDIR "Build"
 )
 FetchContent_MakeAvailable(JoltPhysics)
-
-
 
 set(INTERPROCEDURAL_OPTIMIZATION ON)
 SET_INTERPROCEDURAL_OPTIMIZATION()
