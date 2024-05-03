@@ -125,6 +125,8 @@ add_library(r8ge STATIC
         src/core/Utils.cpp
         src/core/Utils.h
         src/video/types/Texture.cpp
+        src/video/types/Materials.h
+        src/video/types/Lights.h
 )
 
 # Specify the precompiled header

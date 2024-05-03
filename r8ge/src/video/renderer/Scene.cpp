@@ -10,6 +10,7 @@
 namespace r8ge {
     namespace video {
         std::map<unsigned long, Entity *> Scene::m_entities;
+        ShaderLibrary Scene::m_shaderLibrary;
 
         void Scene::addEntity(Entity *entity) {
             m_entities[entity->getEntityID()] = entity;
@@ -155,6 +156,10 @@ namespace r8ge {
             for (auto &entityPair: m_entities) {
                 entityPair.second->setSelectionState(false);
             }
+        }
+
+        ShaderLibrary &Scene::getShaderLibrary() {
+            return m_shaderLibrary;
         }
     } // r8ge
 } // video

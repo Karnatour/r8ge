@@ -3,6 +3,7 @@
 //
 
 #include "Mesh.h"
+#include "Scene.h"
 #include <random>
 
 
@@ -47,14 +48,25 @@ namespace r8ge {
                     m_textures[i].bindTexture(i);
                 }
             }
+            if (!m_material.name.empty()){
+                m_renderingService->setUniformVec3(shader, "material.ambient", m_material.ambient);
+                m_renderingService->setUniformVec3(shader, "material.diffuse", m_material.diffuse);
+                m_renderingService->setUniformVec3(shader, "material.specular", m_material.specular);
+                m_renderingService->setUniformFloat(shader, "material.shininess", m_material.shine);
+            }
+            unsigned int pointLightCount = 0;
+            unsigned int dirLightCount = 0;
+            std::map<unsigned long,Entity*> entityMap = Scene::getEntitiesMap();
+            for (auto &entity : entityMap){
+                if (dynamic_cast<EntityDirLight*>(entity.second)){
+                    //m_renderingService->setUniformVec3(shader, "dirLight" + std::to_string(pointLightCount) + ".direction");
+                }
+            }
+
             m_renderingService->render(m_indices.size());
             if (!m_textures.empty()){
                 GLTexture::unbindTexture();
             }
-        }
-
-        void Mesh::setTexture(const std::vector<GLTexture> &textures) {
-            m_textures = textures;
         }
 
         void Mesh::setupRender() {
@@ -68,6 +80,15 @@ namespace r8ge {
 
         std::string Mesh::getName() {
             return m_name;
+        }
+
+        void Mesh::setTexture(const std::vector<GLTexture> &textures) {
+            m_textures = textures;
+        }
+
+        void Mesh::setMaterial(const Material &material) {
+            m_material = material;
+
         }
     } // r8ge
 } // video

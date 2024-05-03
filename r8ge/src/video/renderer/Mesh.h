@@ -19,6 +19,8 @@ namespace r8ge {
 
             void setTexture(const std::vector<GLTexture> &textures);
 
+            void setMaterial(const Material& material);
+
             std::string getName();
         private:
             void setupRender();
@@ -26,6 +28,7 @@ namespace r8ge {
             std::vector<VertexColorTexture3D> m_vertices;
             std::vector<unsigned int> m_indices;
             std::vector<GLTexture> m_textures;
+            Material m_material;
             std::shared_ptr<video::RenderingService> m_renderingService;
             std::string m_name;
         };

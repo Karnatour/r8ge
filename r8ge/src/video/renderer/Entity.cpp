@@ -3,6 +3,7 @@
 //
 
 #include "Entity.h"
+#include "Scene.h"
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include <random>
@@ -28,11 +29,6 @@ namespace r8ge {
             return m_id;
         }
 
-
-        void Entity::changeMaterial(const Material &material) {
-            m_material = material;
-            m_hasMaterial = true;
-        }
 
         void Entity::changeTransformation(const Transformation &transformation) {
             m_transformation = transformation;
@@ -78,6 +74,10 @@ namespace r8ge {
             return m_flipTexture;
         }
 
+        Material &Entity::getMaterial() {
+            return m_material;
+        }
+
         void EntityModel::render() {
             if (m_updateFunction != nullptr) {
                 m_updateFunction();
@@ -119,12 +119,18 @@ namespace r8ge {
             m_cubeMesh.render(m_shader, m_transformation);
         }
 
-
         void EntityCube::changeTexture(const Texture2D &texture) {
             m_texture.setData(texture);
             m_texture.setType(texture.getType());
             m_cubeMesh.setTexture(std::vector<GLTexture>{m_texture});
             m_hasTexture = true;
+        }
+
+
+        void EntityCube::changeMaterial(const Material &material) {
+            m_material = material;
+            m_cubeMesh.setMaterial(material);
+            m_hasMaterial = true;
         }
 
         void EntitySphere::render() {
@@ -147,9 +153,46 @@ namespace r8ge {
             m_cylinderMesh.render(m_shader, m_transformation);
         }
 
-        EntityCylinder::EntityCylinder(Scene &scene, Mesh cylinderMesh) : Entity(scene),
-                                                                          m_cylinderMesh(std::move(cylinderMesh)) {
+        EntityCylinder::EntityCylinder(Scene &scene, Mesh cylinderMesh) : Entity(scene), m_cylinderMesh(std::move(cylinderMesh)) {
             m_name = m_cylinderMesh.getName();
+        }
+
+        EntityDirLight::EntityDirLight(Scene &scene, Mesh dirLightMesh) : Entity(scene), m_dirLightMesh(std::move(dirLightMesh)) {
+            m_name = m_dirLightMesh.getName();
+        }
+
+        void EntityDirLight::render() {
+            if (m_updateFunction != nullptr) {
+                m_updateFunction();
+            }
+            m_transformation.view = m_scene.getCamera().getViewMatrix();
+            if (Video::m_editorMode) {
+                m_transformation.projection = glm::perspective(glm::radians(45.0f),
+                                                               Video::getGUIService()->getViewportWidth() /
+                                                               Video::getGUIService()->getViewportHeight(),
+                                                               0.1f, 1000.0f);
+            } else {
+                m_transformation.projection = glm::perspective(glm::radians(45.0f),
+                                                               Video::getWindowingService()->getWindowWidth() /
+                                                               Video::getWindowingService()->getWindowHeight(),
+                                                               0.1f, 1000.0f);
+            }
+
+            m_dirLightMesh.render(Scene::getShaderLibrary().getShader("LightEntity.glsl"), m_transformation);
+
+        }
+
+        void EntityDirLight::changeTexture(const Texture2D &texture) {
+            m_texture.setData(texture);
+            m_texture.setType(texture.getType());
+            m_dirLightMesh.setTexture(std::vector<GLTexture>{m_texture});
+            m_hasTexture = true;
+        }
+
+        void EntityDirLight::changeMaterial(const Material &material) {
+            m_material = material;
+            m_dirLightMesh.setMaterial(material);
+            m_hasMaterial = true;
         }
     } // r8ge
 } // video

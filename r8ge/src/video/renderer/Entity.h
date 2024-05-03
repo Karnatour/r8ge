@@ -32,7 +32,7 @@ namespace r8ge {
 
             virtual void changeTexture(const Texture2D &texture) = 0;
 
-            void changeMaterial(const Material &material);
+            virtual void changeMaterial(const Material &material) = 0;
 
             void changeTransformation(const Transformation &transformation);
 
@@ -54,6 +54,8 @@ namespace r8ge {
 
             Transformation &getTransformation();
 
+            Material &getMaterial();
+
             virtual ~Entity() = default;
 
         protected:
@@ -66,7 +68,7 @@ namespace r8ge {
             UpdateFunction m_updateFunction{};
             Program m_shader = Program("Engine/Shaders/EntityDefault.glsl");
             GLTexture m_texture;
-            Material m_material{};
+            Material m_material;
             Transformation m_transformation;
             Scene &m_scene;
             std::string m_name,m_texturePath;
@@ -89,6 +91,8 @@ namespace r8ge {
             explicit EntityCube(Scene &scene, Mesh cubeMesh);
 
             void changeTexture(const Texture2D &texture) override;
+
+            void changeMaterial(const Material &material) override;
 
             void render() override;
 
@@ -114,6 +118,20 @@ namespace r8ge {
 
         private:
             Mesh m_cylinderMesh;
+        };
+
+        class EntityDirLight : public Entity {
+        public:
+            explicit EntityDirLight(Scene &scene, Mesh dirLightMesh);
+
+            void changeTexture(const Texture2D &texture) override;
+
+            void changeMaterial(const Material &material) override;
+
+            void render() override;
+        private:
+            Mesh m_dirLightMesh;
+
         };
 
     } // r8ge

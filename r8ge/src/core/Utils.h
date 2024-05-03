@@ -4,8 +4,14 @@
 
 #pragma once
 
-namespace r8ge{
-std::string getExecutablePath();
+#include "../video/types/SceneHelper.h"
 
-std::string getExecutableDirectory();
+namespace r8ge {
+    std::string getExecutablePath();
+
+    std::string getExecutableDirectory();
+
+    void DecomposeMaterialToComponents(const Material *material, float *ambient, float *diffuse, float *specular, float *shine);
+
+    void RecomposeMaterialFromComponents(const float *ambient, const float *diffuse, const float *specular, const float *shine, Material *material);
 } // r8ge

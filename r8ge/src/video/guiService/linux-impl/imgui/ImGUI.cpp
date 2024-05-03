@@ -19,6 +19,7 @@
 #include "../../../../core/Ar8ge.h"
 #include "../../../../core/Utils.h"
 #include "../../../types/Texture.h"
+#include "../../../types/Materials.h"
 
 namespace r8ge {
     namespace video {
@@ -67,6 +68,7 @@ namespace r8ge {
 
             m_cubeButtonTex = GLTexture("Engine/GUI/cube.png", true);
             m_playButtonTex = GLTexture("Engine/GUI/play.png", true);
+            m_dirLightButtonTex = GLTexture("Engine/GUI/dirLight.png", false);
         }
 
         void ImGUI::exit() {
@@ -111,8 +113,8 @@ namespace r8ge {
                 ImGui::PushFont(normalFont);
                 if (scene.getSelectedEntity() != nullptr) {
                     Entity &selectedEntity = *scene.getSelectedEntity();
-                    static int currentTextureComboIndexl = 0;
-                    const char *previewTextureTypes = textureTypesStrings[currentTextureComboIndexl];
+                    static int currentTextureComboIndex = 0, currentMaterialComboIndex = 0;
+                    const char *previewTextureTypes = textureTypesStrings[currentTextureComboIndex],*previewMaterialTypes = materials[currentMaterialComboIndex].name.c_str();
                     if (ImGui::TreeNode("Transformation")) {
                         float position[3], rotation[3], scale[3];
                         ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(selectedEntity.getTransformation().model), position, rotation, scale);
@@ -129,7 +131,7 @@ namespace r8ge {
                             nfdresult_t nfdresult = NFD_OpenDialog(&path, filterItem, 1, (getExecutableDirectory() + "/Engine/Textures").c_str());
                             if (nfdresult == NFD_OKAY) {
                                 Texture2D tempTexture = Texture2D(path, true);
-                                tempTexture.setType(convertTexTsToMeshTexTs(textureTypesStrings[currentTextureComboIndexl]));
+                                tempTexture.setType(convertTexTsToMeshTexTs(textureTypesStrings[currentTextureComboIndex]));
                                 scene.changeTexture(tempTexture);
                             } else if (nfdresult == NFD_CANCEL) {
                                 R8GE_LOG_TRACE("Texture selection user clicked cancel");
@@ -144,9 +146,32 @@ namespace r8ge {
                         ImGui::SameLine();
                         if (ImGui::BeginCombo("Texture type", previewTextureTypes, ImGuiComboFlags_HeightSmall | ImGuiComboFlags_WidthFitPreview)) {
                             for (int n = 0; n < TEXTURE_TYPES_STRINGS_COUNT; n++) {
-                                bool is_selected = (currentTextureComboIndexl == n);
+                                bool is_selected = (currentTextureComboIndex == n);
                                 if (ImGui::Selectable(textureTypesStrings[n], is_selected)) {
-                                    currentTextureComboIndexl = n;
+                                    currentTextureComboIndex = n;
+                                }
+                                if (is_selected) {
+                                    ImGui::SetItemDefaultFocus();
+                                }
+                            }
+                            ImGui::EndCombo();
+                        }
+                        ImGui::TreePop();
+                    }
+                    if (ImGui::TreeNode("Material")){
+                        float ambient[3], diffuse[3], specular[3], shininess;
+                        DecomposeMaterialToComponents(&selectedEntity.getMaterial(), ambient, diffuse, specular, &shininess);
+                        ImGui::DragFloat3("Ambient", ambient, 0.01f, 0.0f, 1.0f);
+                        ImGui::DragFloat3("Diffuse", diffuse, 0.01f, 0.0f, 1.0f);
+                        ImGui::DragFloat3("Specular", specular, 0.01f, 0.0f, 1.0f);
+                        ImGui::DragFloat("Shininess", &shininess, 0.1f, 0.0f, 100.0f);
+                        RecomposeMaterialFromComponents(ambient, diffuse, specular, &shininess, &selectedEntity.getMaterial());
+                        if (ImGui::BeginCombo("Material templates",previewMaterialTypes, ImGuiComboFlags_HeightSmall | ImGuiComboFlags_WidthFitPreview)) {
+                            for (int n = 0; n < materials.size(); n++) {
+                                bool is_selected = (currentMaterialComboIndex == n);
+                                if (ImGui::Selectable(materials[n].name.c_str(), is_selected)) {
+                                    currentMaterialComboIndex = n;
+                                    selectedEntity.changeMaterial(materials[n]);
                                 }
                                 if (is_selected) {
                                     ImGui::SetItemDefaultFocus();
@@ -162,11 +187,18 @@ namespace r8ge {
             ImGui::End();
 
             if (ImGui::Begin("Builder", nullptr, windowFlags)) {
-                if (ImGui::ImageButton(reinterpret_cast<ImTextureID>(m_cubeButtonTex.getTexture()), ImVec2(32, 32))) {
+                if (ImGui::ImageButton(reinterpret_cast<ImTextureID>(m_cubeButtonTex.getTexture()), ImVec2(48, 48))) {
                     std::vector<GLTexture> emptyTextures;
                     Mesh cubeMesh(cubeVertices, cubeIndices, emptyTextures, "Cube");
                     Entity *cubeEntity = new EntityCube(scene, cubeMesh);
                     scene.addEntity(cubeEntity);
+                }
+                ImGui::SeparatorText("Lighting");
+                if (ImGui::ImageButton(reinterpret_cast<ImTextureID>(m_dirLightButtonTex.getTexture()), ImVec2(48, 48))) {
+                    std::vector<GLTexture> emptyTextures;
+                    Mesh cubeMesh(cubeVertices, cubeIndices, emptyTextures, "DirLight");
+                    Entity *dirLightEntity = new EntityDirLight(scene, cubeMesh);
+                    scene.addEntity(dirLightEntity);
                 }
             }
             ImGui::End();

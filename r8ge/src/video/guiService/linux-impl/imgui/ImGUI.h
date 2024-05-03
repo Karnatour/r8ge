@@ -48,7 +48,7 @@ namespace r8ge {
 
         private:
             ImGuiWindowFlags windowFlags = 0;
-            GLTexture m_cubeButtonTex,m_playButtonTex;
+            GLTexture m_cubeButtonTex,m_playButtonTex,m_dirLightButtonTex;
             ImGuizmo::OPERATION m_gizmoOperation = ImGuizmo::TRANSLATE;
             std::pair<float,float> lastViewportSize = {0.0f,0.0f};
             ImFont *smallFont = nullptr,*normalFont = nullptr,*bigFont = nullptr;

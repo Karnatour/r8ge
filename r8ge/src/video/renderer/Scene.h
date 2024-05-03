@@ -46,17 +46,18 @@ namespace r8ge {
 
             void deselectAllEntities();
 
+            static ShaderLibrary& getShaderLibrary();
+
             std::string getName();
 
-            std::map<unsigned long,Entity *> getEntitiesMap();
+            static std::map<unsigned long,Entity *> getEntitiesMap();
 
         private:
             Camera m_camera = Camera(glm::vec3(0.0f,0.0f,0.0f),glm::vec3(0.0f,1.0f,0.0f));
             static std::map<unsigned long, Entity *> m_entities;
             Entity *m_selectedEntityPtr = nullptr;
-            ShaderLibrary m_shaderLibrary;
+            static ShaderLibrary m_shaderLibrary;
             std::string m_name;
-
             SkyBox m_skyBox;
             Transformation &m_skyboxTransformationRef = m_skyBox.getSkyBoxTransformationRef();
         };
